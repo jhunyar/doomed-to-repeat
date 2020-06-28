@@ -1,0 +1,12 @@
+function distanceBetween(x1, y1, x2, y2)
+  return math.sqrt((y2 -y1)^2 + (x2 - x1)^2)
+end
+
+function player_mouse_angle()
+  x,y = cam:mousePosition()
+  return math.atan2(player.body:getY() - y, player.body:getX() - x) + math.pi
+end
+
+function enemy_player_angle(enemy)
+  return math.atan2(player.body:getY() - enemy.y, player.body:getX() - enemy.x)
+end
