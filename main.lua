@@ -49,6 +49,7 @@ function love.load()
   gameMap = sti('maps/map.lua')
   mapw = gameMap.width * gameMap.tilewidth
   maph = gameMap.height * gameMap.tileheight
+  cam:lookAt(mapw/2, maph/2)
   bg_quad = love.graphics.newQuad(0, 0, mapw, maph, sprites.background:getWidth(), sprites.background:getHeight())
 end
 
