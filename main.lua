@@ -1,5 +1,5 @@
 function love.load()
-  love.window.setMode(5000, 5000, {borderless=true})
+  love.window.setMode(1920, 1080, {borderless=true})
 
   myWorld = love.physics.newWorld(0, 0, false)
 
@@ -18,7 +18,6 @@ function love.load()
   sprites.loot = love.graphics.newImage('sprites/bullet.png')
   sprites.background = love.graphics.newImage('sprites/bg.png')
   sprites.background:setWrap('repeat', 'repeat')
-  bg_quad = love.graphics.newQuad(0, 0, love.graphics.getWidth(), love.graphics.getHeight(), sprites.background:getWidth(), sprites.background:getHeight())
 
   panicFireRate = 0.10
   lootTimer = 10
@@ -43,16 +42,24 @@ function love.load()
   require('sound')
   require('slam')
 
+  sti = require('sti/sti')
   cameraFile = require('hump/camera')
   cam = cameraFile()
+
+  gameMap = sti('maps/map.lua')
+  mapw = gameMap.width * gameMap.tilewidth
+  maph = gameMap.height * gameMap.tileheight
+  bg_quad = love.graphics.newQuad(0, 0, mapw, maph, sprites.background:getWidth(), sprites.background:getHeight())
 end
 
 function love.update(dt)
+  myWorld:update(dt)
+  gameMap:update(dt)
   -- cam:lookAt(player.body:getX(), player.body:getY())
-  cam:lockPosition(player.body:getX(), player.body:getY(), cam.smooth.linear(350))
+  cam:lockPosition(player.body:getX(), player.body:getY(), cam.smooth.linear(500))
 
   if gameState == 2 then
-    if love.keyboard.isDown('s') and player.body:getY() < love.graphics.getHeight() then
+    if love.keyboard.isDown('s') and player.body:getY() < maph then -- and player.body:getY() < love.graphics.getHeight()
       player.body:applyForce(0, 500)
       if player_mouse_angle() > 4 and player_mouse_angle() < 5.5 then
         player.sprite = sprites.shipFront
@@ -65,7 +72,7 @@ function love.update(dt)
       end
     end
 
-    if love.keyboard.isDown('w') and player.body:getY() > 0 then
+    if love.keyboard.isDown('w') and player.body:getY() > 0 then -- and player.body:getY() > 0
       player.body:applyForce(0, -500)
       if player_mouse_angle() > 4 and player_mouse_angle() < 5.5 then
         player.sprite = sprites.shipRear
@@ -78,7 +85,7 @@ function love.update(dt)
       end
     end
 
-    if love.keyboard.isDown('a') and player.body:getX() > 0 then
+    if love.keyboard.isDown('a') and player.body:getX() > 0 then -- and player.body:getX() > 0
       player.body:applyForce(-500, 0)
       if player_mouse_angle() > 4 and player_mouse_angle() < 5.5 then
         player.sprite = sprites.shipRight
@@ -91,7 +98,7 @@ function love.update(dt)
       end
     end
 
-    if love.keyboard.isDown('d') and player.body:getX() < love.graphics.getWidth()then
+    if love.keyboard.isDown('d') and player.body:getX() < mapw then -- and player.body:getX() < love.graphics.getWidth()
       player.body:applyForce(500, 0)
       if player_mouse_angle() > 4 and player_mouse_angle() < 5.5 then
         player.sprite = sprites.shipLeft
@@ -130,7 +137,9 @@ function love.update(dt)
       enemies = {}
       loots = {}
       gameState = 1
-      player.body:setPosition(love.graphics.getWidth()/2, love.graphics.getHeight()/2)
+      music:stop()
+      ending:play()
+      player.body:setPosition(mapw/2, maph/2)
     end
 
     if distanceBetween(z.x, z.y, player.body:getX(), player.body:getY()) < 100 then
@@ -149,7 +158,7 @@ function love.update(dt)
 
   for i=#bullets, 1, -1 do
     local b = bullets[i]
-    if b.x < 0 or b.y < 0 or b.x > love.graphics.getWidth() or b.y > love.graphics.getHeight() then
+    if b.x < 0 or b.y < 0 or b.x > mapw or b.y > maph then
       table.remove(bullets, i)
     end
   end
@@ -211,12 +220,12 @@ function love.update(dt)
       lootTimer = 10
     end
   end
-
-  myWorld:update(dt)
 end
 
 function love.draw()
   cam:attach()
+
+  gameMap:drawLayer(gameMap.layers['Tile Layer 1'])
 
   love.graphics.draw(sprites.background, bg_quad, 0, 0) -- add quad variable in second position for tiling
 
@@ -252,6 +261,16 @@ function love.draw()
     love.graphics.print('Angle: ' .. player_mouse_angle(), camX -100, camY+80)
     love.graphics.reset()
   end
+end
+
+function spawnStar()
+  star = {}
+
+  star.x = 3000
+  star.y = 3000
+  star.mass = 500
+
+  table.insert(stars, star)
 end
 
 function quantumLeap()

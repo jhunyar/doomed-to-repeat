@@ -10,16 +10,16 @@ function spawnEnemy()
 
   if side == 1 then
     enemy.x = -30
-    enemy.y = math.random(0, love.graphics.getHeight())
+    enemy.y = math.random(0, maph)
   elseif side == 2 then
-    enemy.x = math.random(0, love.graphics.getWidth())
+    enemy.x = math.random(0, mapw)
     enemy.y = -30
   elseif side == 3 then
-    enemy.x = love.graphics.getWidth() + 30
-    enemy.y = math.random(0, love.graphics.getHeight())
+    enemy.x = mapw + 30
+    enemy.y = math.random(0, maph)
   else
-    enemy.x = math.random(0, love.graphics.getWidth())
-    enemy.y = love.graphics.getHeight() + 30
+    enemy.x = math.random(0, mapw)
+    enemy.y = maph + 30
   end
 
   table.insert(enemies, enemy)
@@ -44,8 +44,8 @@ end
 function spawnLoot()
   loot = {}
 
-  loot.x = math.random(0, love.graphics.getWidth())
-  loot.y = math.random(0, love.graphics.getHeight())
+  loot.x = math.random(0, mapw)
+  loot.y = math.random(0, maph)
   loot.type = 'ammo'
   loot.claimed = false
 

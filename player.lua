@@ -1,5 +1,11 @@
+sti = require('sti/sti')
+gameMap = sti('maps/map.lua')
+
+mapw = gameMap.width * gameMap.tilewidth
+maph = gameMap.height * gameMap.tileheight
+
 player = {}
-player.body = love.physics.newBody(myWorld, love.graphics.getWidth()/2, love.graphics.getHeight()/2, 'dynamic')
+player.body = love.physics.newBody(myWorld, mapw/2, maph/2, 'dynamic')
 player.shape = love.physics.newRectangleShape(90, 90)
 player.fixture = love.physics.newFixture(player.body, player.shape)
 
