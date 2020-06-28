@@ -7,7 +7,7 @@ function love.load()
   love.mouse.setCursor(cursor)
 
   sprites = {}
-  sprites.player = love.graphics.newImage('sprites/playertp.png')
+  sprites.player = love.graphics.newImage('sprites/ship-static.png')
   sprites.shipStatic = love.graphics.newImage('sprites/ship-static.png')
   sprites.shipLeft = love.graphics.newImage('sprites/ship-left.png')
   sprites.shipRight = love.graphics.newImage('sprites/ship-right.png')
@@ -31,6 +31,7 @@ function love.load()
   maxTime = 2
   timer = maxTime
   score = 0
+  showHUD = true
 
   fontLarge = love.graphics.newFont(40)
   fontSmall = love.graphics.newFont(20)
@@ -242,13 +243,15 @@ function love.draw()
     love.graphics.print('Click anywhere to begin!', camX + 200, camY)
   end
 
-  love.graphics.setFont(fontTiny)
-  love.graphics.setColor(0.5, 0.5, 0.5)
-  love.graphics.print('Score: ' .. score, camX - 100, camY - 80)
-  love.graphics.print('Ammo: ' .. player.ammo, camX + 60, camY - 80)
-  love.graphics.print('Fear: ' .. math.ceil(player.fear), camX + 60, camY + 80)
-  love.graphics.print('Angle: ' .. player_mouse_angle(), camX -100, camY+80)
-  love.graphics.reset()
+  if showHUD == true then
+    love.graphics.setFont(fontTiny)
+    love.graphics.setColor(0.5, 0.5, 0.5)
+    love.graphics.print('Score: ' .. score, camX - 100, camY - 80)
+    love.graphics.print('Ammo: ' .. player.ammo, camX + 60, camY - 80)
+    love.graphics.print('Fear: ' .. math.ceil(player.fear), camX + 60, camY + 80)
+    love.graphics.print('Angle: ' .. player_mouse_angle(), camX -100, camY+80)
+    love.graphics.reset()
+  end
 end
 
 function quantumLeap()
@@ -279,6 +282,14 @@ end
 function love.keyreleased(key)
   if key == "escape" then
     love.event.quit()
+  end
+
+  if key == 'h' then
+    if showHUD then
+      showHUD = false
+    elseif not showHUD then
+      showHUD = true
+    end
   end
 
   if key == 'w' or key == 'a' or key == 's' or key == 'd' then
