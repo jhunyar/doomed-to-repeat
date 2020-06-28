@@ -3,6 +3,9 @@ function love.load()
 
   myWorld = love.physics.newWorld(0, 0, false)
 
+  cursor = love.mouse.newCursor("sprites/cursor.png", 0, 0)
+  love.mouse.setCursor(cursor)
+
   sprites = {}
   sprites.player = love.graphics.newImage('sprites/playertp.png')
   sprites.shipStatic = love.graphics.newImage('sprites/ship-static.png')
@@ -10,10 +13,10 @@ function love.load()
   sprites.shipRight = love.graphics.newImage('sprites/ship-right.png')
   sprites.shipFront = love.graphics.newImage('sprites/ship-front.png')
   sprites.shipRear = love.graphics.newImage('sprites/ship-rear.png')
-  sprites.bullet = love.graphics.newImage('sprites/bullet.png')
-  sprites.enemy = love.graphics.newImage('sprites/enemytrans.png')
+  sprites.bullet = love.graphics.newImage('sprites/bullet2.png')
+  sprites.enemy = love.graphics.newImage('sprites/enemy.png')
   sprites.loot = love.graphics.newImage('sprites/bullet.png')
-  sprites.background = love.graphics.newImage('sprites/black.png')
+  sprites.background = love.graphics.newImage('sprites/bg.png')
   sprites.background:setWrap('repeat', 'repeat')
   bg_quad = love.graphics.newQuad(0, 0, love.graphics.getWidth(), love.graphics.getHeight(), sprites.background:getWidth(), sprites.background:getHeight())
 
@@ -227,7 +230,7 @@ function love.draw()
   end
 
   for i,b in ipairs(bullets) do
-    love.graphics.draw(sprites.bullet, b.x, b.y, nil, 0.25, 0.25, sprites.bullet:getWidth()/2, sprites.bullet:getHeight()/2)
+    love.graphics.draw(sprites.bullet, b.x, b.y, b.direction, 1, 1, sprites.bullet:getWidth()/2, sprites.bullet:getHeight()/2)
   end
 
   cam:detach()
@@ -276,5 +279,9 @@ end
 function love.keyreleased(key)
   if key == "escape" then
     love.event.quit()
+  end
+
+  if key == 'w' or key == 'a' or key == 's' or key == 'd' then
+    player.sprite = sprites.shipStatic
   end
 end
