@@ -12,8 +12,8 @@ player.fixture = love.physics.newFixture(player.body, player.shape)
 player.body:setMass(1)
 player.body:setLinearDamping(0.75)
 
-player.maxSpeed = 180
-player.speed = 250
+player.maxSpeed = 1000
+player.speed = 1000
 player.maxFear = 70
 player.fear = 0
 player.maxAmmo = 100

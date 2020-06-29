@@ -7,6 +7,12 @@ function love.load()
   love.mouse.setCursor(cursor)
 
   sprites = {}
+  sprites.planets = {}
+  
+  for i = 1, 25, 1 do
+    table.insert(sprites.planets, love.graphics.newImage('sprites/planets/mars' .. i .. '.png'))
+  end
+
   sprites.player = love.graphics.newImage('sprites/ship-static.png')
   sprites.shipStatic = love.graphics.newImage('sprites/ship-static.png')
   sprites.shipLeft = love.graphics.newImage('sprites/ship-left.png')
@@ -16,6 +22,8 @@ function love.load()
   sprites.bullet = love.graphics.newImage('sprites/bullet2.png')
   sprites.enemy = love.graphics.newImage('sprites/enemy.png')
   sprites.loot = love.graphics.newImage('sprites/bullet.png')
+  -- sprites.planet = love.graphics.newImage('sprites/planets/p.png')
+  sprites.planetAnim = love.graphics.newImage('sprites/planets/marssprites.png')
   sprites.background = love.graphics.newImage('sprites/bg.png')
   sprites.background:setWrap('repeat', 'repeat')
 
@@ -25,6 +33,7 @@ function love.load()
   enemies = {}
   bullets = {}
   loots = {}
+  planets = {}
 
   gameState = 1
   maxTime = 2
@@ -42,6 +51,7 @@ function love.load()
   require('sound')
   require('slam')
 
+  anim8 = require('anim8/anim8')
   sti = require('sti/sti')
   cameraFile = require('hump/camera')
   cam = cameraFile()
@@ -51,6 +61,10 @@ function love.load()
   maph = gameMap.height * gameMap.tileheight
   cam:lookAt(mapw/2, maph/2)
   bg_quad = love.graphics.newQuad(0, 0, mapw, maph, sprites.background:getWidth(), sprites.background:getHeight())
+
+  for i, obj in pairs(gameMap.layers['planets'].objects) do
+    spawnPlanet(obj.x, obj.y, obj.width, obj.width*100) -- x, y, size, mass
+  end
 end
 
 function love.update(dt)
@@ -61,7 +75,7 @@ function love.update(dt)
 
   if gameState == 2 then
     if love.keyboard.isDown('s') and player.body:getY() < maph then -- and player.body:getY() < love.graphics.getHeight()
-      player.body:applyForce(0, 500)
+      player.body:applyForce(0, player.maxSpeed)
       if player_mouse_angle() > 4 and player_mouse_angle() < 5.5 then
         player.sprite = sprites.shipFront
       elseif player_mouse_angle() < 4 and player_mouse_angle() > 2.3 then
@@ -74,7 +88,7 @@ function love.update(dt)
     end
 
     if love.keyboard.isDown('w') and player.body:getY() > 0 then -- and player.body:getY() > 0
-      player.body:applyForce(0, -500)
+      player.body:applyForce(0, -player.maxSpeed)
       if player_mouse_angle() > 4 and player_mouse_angle() < 5.5 then
         player.sprite = sprites.shipRear
       elseif player_mouse_angle() < 4 and player_mouse_angle() > 2.3 then
@@ -87,7 +101,7 @@ function love.update(dt)
     end
 
     if love.keyboard.isDown('a') and player.body:getX() > 0 then -- and player.body:getX() > 0
-      player.body:applyForce(-500, 0)
+      player.body:applyForce(-player.maxSpeed, 0)
       if player_mouse_angle() > 4 and player_mouse_angle() < 5.5 then
         player.sprite = sprites.shipRight
       elseif player_mouse_angle() < 4 and player_mouse_angle() > 2.3 then
@@ -100,7 +114,7 @@ function love.update(dt)
     end
 
     if love.keyboard.isDown('d') and player.body:getX() < mapw then -- and player.body:getX() < love.graphics.getWidth()
-      player.body:applyForce(500, 0)
+      player.body:applyForce(player.maxSpeed, 0)
       if player_mouse_angle() > 4 and player_mouse_angle() < 5.5 then
         player.sprite = sprites.shipLeft
       elseif player_mouse_angle() < 4 and player_mouse_angle() > 2.3 then
@@ -128,6 +142,10 @@ function love.update(dt)
     if player.fear < 0 then
       player.fear = 0
     end
+  end
+
+  for i,p in ipairs(planets) do
+    gravityWell(player.body, p.x, p.y, p.size*100, p.size*2) -- body, x, y, power, epsilon
   end
 
   for i,z in ipairs(enemies) do
@@ -174,6 +192,10 @@ function love.update(dt)
         player.ammo = player.ammo + 1
       end
     end
+  end
+
+  for i,p in ipairs(planets) do
+    -- p.animation:update(dt)
   end
 
   for i,l in ipairs(loots) do
@@ -230,6 +252,12 @@ function love.draw()
 
   love.graphics.draw(sprites.background, bg_quad, 0, 0) -- add quad variable in second position for tiling
 
+  for i,p in ipairs(planets) do
+    -- p.animation:draw(sprites.planetAnim, p.x, p.y, nil, p.size/260, p.size/260, 128, 128)
+
+    love.graphics.draw(sprites.planets[i], p.x, p.y, nil, p.size/sprites.planets[i]:getWidth(), p.size/sprites.planets[i]:getWidth(), sprites.planets[i]:getWidth()/2, sprites.planets[i]:getHeight()/2)
+  end
+
   for i,l in ipairs(loots) do
     love.graphics.draw(sprites.loot, l.x, l.y, nil, 0.5, 0.5, sprites.loot:getWidth()/2, sprites.loot:getHeight()/2)
   end
@@ -264,14 +292,22 @@ function love.draw()
   end
 end
 
-function spawnStar()
-  star = {}
+function spawnPlanet(x, y, size, mass)
+  planet = {}
 
-  star.x = 3000
-  star.y = 3000
-  star.mass = 500
+  planet.body = love.physics.newBody(myWorld, x, y, 'static')
+  planet.shape = love.physics.newCircleShape(size/2)
+  planet.fixture = love.physics.newFixture(planet.body, planet.shape)
 
-  table.insert(stars, star)
+  planet.x = x
+  planet.y = y
+  planet.size = size
+  planet.mass = mass
+
+  -- planet.grid = anim8.newGrid(256, 256, 2560, 2304)
+  -- planet.animation = anim8.newAnimation(planet.grid('1-10',1, '1-10',2, '1-10',3, '1-10',4, '1-10',5, '1-10',6, '1-10',7, '1-10',8, '1-10',9), 0.1)
+
+  table.insert(planets, planet)
 end
 
 function quantumLeap()
@@ -314,5 +350,26 @@ function love.keyreleased(key)
 
   if key == 'w' or key == 'a' or key == 's' or key == 'd' then
     player.sprite = sprites.shipStatic
+  end
+end
+
+function gravityWell(body, x, y, power, epsilon)
+  local lx = x - body:getX()
+  local ly = y - body:getY()
+  local ldSq = lx^2 + ly^2
+
+  -- local G = (6.673*(10^-11))*3779.5275590551
+  -- local F = (G*mass*body:getMass())/ldSq^2^2
+
+  power = power * 10000 or 100000
+  epsilon = epsilon * epsilon or 50 * 50
+
+  if ldSq ~= 0 then
+      local ld = math.sqrt(ldSq)
+      if ldSq < epsilon then ldSq = epsilon end
+      
+      local lfactor = (power * love.timer.getDelta()) / (ldSq * ld)
+      local oldX, oldY = body:getLinearVelocity()
+      body:setLinearVelocity(oldX + lx * lfactor, oldY + ly * lfactor)
   end
 end

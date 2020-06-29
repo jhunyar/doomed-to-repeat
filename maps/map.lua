@@ -8,8 +8,8 @@ return {
   height = 10,
   tilewidth = 500,
   tileheight = 500,
-  nextlayerid = 2,
-  nextobjectid = 1,
+  nextlayerid = 3,
+  nextobjectid = 10,
   properties = {},
   tilesets = {},
   layers = {
@@ -38,6 +38,110 @@ return {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+      }
+    },
+    {
+      type = "objectgroup",
+      draworder = "topdown",
+      id = 2,
+      name = "planets",
+      visible = true,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      properties = {},
+      objects = {
+        {
+          id = 1,
+          name = "",
+          type = "",
+          shape = "ellipse",
+          x = 1696,
+          y = 1688,
+          width = 120,
+          height = 120,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 3,
+          name = "",
+          type = "",
+          shape = "ellipse",
+          x = 3664,
+          y = 4192,
+          width = 272,
+          height = 272,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 4,
+          name = "",
+          type = "",
+          shape = "ellipse",
+          x = 3696,
+          y = 592,
+          width = 64,
+          height = 64,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 6,
+          name = "",
+          type = "",
+          shape = "ellipse",
+          x = 2164,
+          y = 4196,
+          width = 52,
+          height = 52,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 7,
+          name = "",
+          type = "",
+          shape = "ellipse",
+          x = 2628,
+          y = 4800,
+          width = 92,
+          height = 92,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 8,
+          name = "",
+          type = "",
+          shape = "ellipse",
+          x = 178,
+          y = 216,
+          width = 142,
+          height = 142,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 9,
+          name = "",
+          type = "",
+          shape = "ellipse",
+          x = 216,
+          y = 3480,
+          width = 416,
+          height = 416,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        }
       }
     }
   }

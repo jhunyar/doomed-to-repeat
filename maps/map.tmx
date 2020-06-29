@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="500" tileheight="500" infinite="0" nextlayerid="2" nextobjectid="1">
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="500" tileheight="500" infinite="0" nextlayerid="3" nextobjectid="10">
  <editorsettings>
   <export target="map.lua" format="lua"/>
  </editorsettings>
@@ -17,4 +17,27 @@
 0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup color="#aa007f" id="2" name="planets">
+  <object id="1" x="1696" y="1688" width="120" height="120">
+   <ellipse/>
+  </object>
+  <object id="3" x="3664" y="4192" width="272" height="272">
+   <ellipse/>
+  </object>
+  <object id="4" x="3696" y="592" width="64" height="64">
+   <ellipse/>
+  </object>
+  <object id="6" x="2164" y="4196" width="52" height="52">
+   <ellipse/>
+  </object>
+  <object id="7" x="2628" y="4800" width="92" height="92">
+   <ellipse/>
+  </object>
+  <object id="8" x="178" y="216" width="142" height="142">
+   <ellipse/>
+  </object>
+  <object id="9" x="216" y="3480" width="416" height="416">
+   <ellipse/>
+  </object>
+ </objectgroup>
 </map>
