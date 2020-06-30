@@ -182,12 +182,6 @@ function spawnPlanet(x, y, size)
   table.insert(planets, planet)
 end
 
-function quantumLeap()
-  local instance = sndLeap:play()
-  x,y = cam:mousePosition()
-  player.body:setPosition(player.body:getX() + 350 * math.cos(math.atan2(player.body:getY() - y, player.body:getX() - x) + math.pi), player.body:getY() + 350 * math.sin(math.atan2(player.body:getY() - y, player.body:getX() - x) + math.pi))
-end
-
 function love.mousepressed(x, y, b, istouch)
   if b == 1 and gameState == 2 and player.ammo > 0 then
     spawnBullet()

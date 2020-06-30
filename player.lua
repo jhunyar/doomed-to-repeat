@@ -110,3 +110,9 @@ end
 function drawPlayer()
   love.graphics.draw(player.sprite, player.body:getX(), player.body:getY(), player_mouse_angle(), 1, 1, sprites.player:getWidth()/2, sprites.player:getHeight()/2)
 end
+
+function quantumLeap()
+  local instance = sndLeap:play()
+  x,y = cam:mousePosition()
+  player.body:setPosition(player.body:getX() + 350 * math.cos(math.atan2(player.body:getY() - y, player.body:getX() - x) + math.pi), player.body:getY() + 350 * math.sin(math.atan2(player.body:getY() - y, player.body:getX() - x) + math.pi))
+end
