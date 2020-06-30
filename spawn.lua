@@ -1,30 +1,3 @@
-function spawnEnemy()
-  enemy = {}
-
-  enemy.x = 0
-  enemy.y = 0
-  enemy.speed = 140
-  enemy.dead = false
-
-  local side = math.random(1, 4)
-
-  if side == 1 then
-    enemy.x = -30
-    enemy.y = math.random(0, maph)
-  elseif side == 2 then
-    enemy.x = math.random(0, mapw)
-    enemy.y = -30
-  elseif side == 3 then
-    enemy.x = mapw + 30
-    enemy.y = math.random(0, maph)
-  else
-    enemy.x = math.random(0, mapw)
-    enemy.y = maph + 30
-  end
-
-  table.insert(enemies, enemy)
-end
-
 function spawnBullet()
   local instance = sndShoot:play()
 
