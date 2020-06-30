@@ -131,33 +131,7 @@ end
 
 function love.draw()
   cam:attach()
-  
-  love.graphics.setColor(1,1,1)
-  if fade == true then
-      love.graphics.setColor(color)
-  end
-
-  gameMap:drawLayer(gameMap.layers['Tile Layer 1'])
-
-  love.graphics.draw(sprites.background, bg_quad, 0, 0) -- add quad variable in second position for tiling
-
-  for i,p in ipairs(planets) do
-    -- p.animation:draw(sprites.planetAnim, p.x, p.y, nil, p.size/260, p.size/260, 128, 128)
-
-    love.graphics.draw(sprites.planets[i], p.x, p.y, nil, p.size/sprites.planets[i]:getWidth(), p.size/sprites.planets[i]:getWidth(), sprites.planets[i]:getWidth()/2, sprites.planets[i]:getHeight()/2)
-  end
-
-  for i,l in ipairs(loots) do
-    love.graphics.draw(sprites.loot, l.x, l.y, nil, 0.5, 0.5, sprites.loot:getWidth()/2, sprites.loot:getHeight()/2)
-  end
-
-  drawPlayer()
-  drawEnemies()
-
-  for i,b in ipairs(bullets) do
-    love.graphics.draw(sprites.bullet, b.x, b.y, b.direction, 1, 1, sprites.bullet:getWidth()/2, sprites.bullet:getHeight()/2)
-  end
-
+  drawWorld()
   cam:detach()
 
   camX,camY = cam:cameraCoords(player.body:getX(), player.body:getY())
@@ -239,5 +213,33 @@ function gravityWell(body, x, y, power, epsilon)
     local lfactor = (power * love.timer.getDelta()) / (ldSq * ld)
     local oldX, oldY = body:getLinearVelocity()
     body:setLinearVelocity(oldX + lx * lfactor, oldY + ly * lfactor)
+  end
+end
+
+function drawWorld()
+  love.graphics.setColor(1,1,1)
+  if fade == true then
+      love.graphics.setColor(color)
+  end
+
+  gameMap:drawLayer(gameMap.layers['Tile Layer 1'])
+
+  love.graphics.draw(sprites.background, bg_quad, 0, 0) -- add quad variable in second position for tiling
+
+  for i,p in ipairs(planets) do
+    -- p.animation:draw(sprites.planetAnim, p.x, p.y, nil, p.size/260, p.size/260, 128, 128)
+
+    love.graphics.draw(sprites.planets[i], p.x, p.y, nil, p.size/sprites.planets[i]:getWidth(), p.size/sprites.planets[i]:getWidth(), sprites.planets[i]:getWidth()/2, sprites.planets[i]:getHeight()/2)
+  end
+
+  for i,l in ipairs(loots) do
+    love.graphics.draw(sprites.loot, l.x, l.y, nil, 0.5, 0.5, sprites.loot:getWidth()/2, sprites.loot:getHeight()/2)
+  end
+
+  drawPlayer()
+  drawEnemies()
+
+  for i,b in ipairs(bullets) do
+    love.graphics.draw(sprites.bullet, b.x, b.y, b.direction, 1, 1, sprites.bullet:getWidth()/2, sprites.bullet:getHeight()/2)
   end
 end

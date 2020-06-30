@@ -5,7 +5,7 @@ function spawnBullet()
 
   bullet.x = player.body:getX()
   bullet.y = player.body:getY()
-  bullet.speed = 500
+  bullet.speed = 1000
   bullet.direction = player_mouse_angle()
   bullet.dead = false
 

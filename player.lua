@@ -9,10 +9,7 @@ player.body = love.physics.newBody(myWorld, mapw/2, maph/2, 'dynamic')
 player.shape = love.physics.newRectangleShape(90, 90)
 player.fixture = love.physics.newFixture(player.body, player.shape)
 
-player.body:setMass(500)
-player.body:setLinearDamping(0)
--- player.body:setFixedRotation(true)
-
+player.linearDamping = 0
 player.thrust = 100
 player.maxFear = 100
 player.fear = 0
@@ -20,8 +17,18 @@ player.maxAmmo = 100
 player.ammo = 100
 player.sprite = sprites.shipStatic
 
+player.body:setMass(500)
+player.body:setLinearDamping(player.linearDamping)
+-- player.body:setFixedRotation(true)
+
 function updatePlayer(dt)
   if gameState == 2 then
+    if player.body:getY() > maph or player.body:getY() < 0 or player.body:getX() < 0 or player.body:getX() > mapw then
+      player.body:setLinearDamping(1.5)
+    else
+      player.body:setLinearDamping(player.linearDamping)
+    end
+
     if love.keyboard.isDown('s') and player.body:getY() < maph then -- and player.body:getY() < love.graphics.getHeight()
       player.body:applyForce(0, player.thrust*1000)
       if player_mouse_angle() > 4 and player_mouse_angle() < 5.5 then
