@@ -43,25 +43,25 @@ end
 
 
 function updateEnemies(dt)
-  for i,z in ipairs(enemies) do
-    if distanceBetween(z.x, z.y, z.wx, z.wy) < 50 then -- enemy has arrived
-      nx, ny = genWaypoint(z)
-      z.wx = nx
-      z.wy = ny
+  for i,e in ipairs(enemies) do
+    if distanceBetween(e.x, e.y, e.wx, e.wy) < 50 then -- enemy has arrived in vicinity of waypoint
+      nx, ny = genWaypoint(e)
+      e.wx = nx
+      e.wy = ny
     end
-  
+
     -- track the player if too close
-    if distanceBetween(z.x, z.y, player.body:getX(), player.body:getY()) < 500 then
-      z.angle = enemy_player_angle(z)
-      z.x = z.x + math.cos(enemy_player_angle(z)) * z.speed * dt
-      z.y = z.y + math.sin(enemy_player_angle(z)) * z.speed * dt
+    if distanceBetween(e.x, e.y, player.body:getX(), player.body:getY()) < 500 then
+      e.angle = enemy_player_angle(e)
+      e.x = e.x + math.cos(enemy_player_angle(e)) * e.speed * dt
+      e.y = e.y + math.sin(enemy_player_angle(e)) * e.speed * dt
     else -- move enemy towards waypoint
-      z.angle = enemy_waypoint_angle(z)
-      z.x = z.x + math.cos(enemy_waypoint_angle(z)) * z.speed * dt
-      z.y = z.y + math.sin(enemy_waypoint_angle(z)) * z.speed * dt
+      e.angle = enemy_waypoint_angle(e)
+      e.x = e.x + math.cos(enemy_waypoint_angle(e)) * e.speed * dt
+      e.y = e.y + math.sin(enemy_waypoint_angle(e)) * e.speed * dt
     end
     
-    if distanceBetween(z.x, z.y, player.body:getX(), player.body:getY()) < 30 then
+    if distanceBetween(e.x, e.y, player.body:getX(), player.body:getY()) < 30 then
       enemies = {}
       loots = {}
       bullets = {}
@@ -72,20 +72,20 @@ function updateEnemies(dt)
       cam:lookAt(mapw/2, maph/2)
     end
 
-    if distanceBetween(z.x, z.y, player.body:getX(), player.body:getY()) < 100 then
+    if distanceBetween(e.x, e.y, player.body:getX(), player.body:getY()) < 100 then
       player.fear = player.fear + 3 * dt
-    elseif distanceBetween(z.x, z.y, player.body:getX(), player.body:getY()) < 200 then
+    elseif distanceBetween(e.x, e.y, player.body:getX(), player.body:getY()) < 200 then
       player.fear = player.fear + 2 * dt
-    elseif distanceBetween(z.x, z.y, player.body:getX(), player.body:getY()) < 300 then
+    elseif distanceBetween(e.x, e.y, player.body:getX(), player.body:getY()) < 300 then
       player.fear = player.fear + 1 * dt
     end
   end
 
-  for i,z in ipairs(enemies) do
+  for i,e in ipairs(enemies) do
     for j,b in ipairs(bullets) do
-      if distanceBetween(z.x, z.y, b.x, b.y) < 20 then
+      if distanceBetween(e.x, e.y, b.x, b.y) < 20 then
         sndDestroy:play()
-        z.dead = true
+        e.dead = true
         b.dead = true
         score = score + 1
         player.ammo = player.ammo + 1
@@ -94,16 +94,16 @@ function updateEnemies(dt)
   end
 
   for i=#enemies, 1, -1 do
-    local z = enemies[i]
-    if z.dead == true then
+    local e = enemies[i]
+    if e.dead == true then
       table.remove(enemies, i)
     end
   end
 end
 
 function drawEnemies()
-  for i,z in ipairs(enemies) do
-    love.graphics.draw(sprites.enemy, z.x, z.y, z.angle, 1, 1, sprites.enemy:getWidth()/2, sprites.enemy:getHeight()/2)
+  for i,e in ipairs(enemies) do
+    love.graphics.draw(sprites.enemy, e.x, e.y, e.angle, 1, 1, sprites.enemy:getWidth()/2, sprites.enemy:getHeight()/2)
   end
 end
 
@@ -113,7 +113,7 @@ function genWaypoint(e)
   elseif e.x >= mapw then
     wx = e.x + math.random(-30,-500)
   else
-    wx = e.x + math.random(-500, 500)
+    wx = math.random(0, mapw)
   end
 
   if e.y <= 0 then
@@ -121,7 +121,7 @@ function genWaypoint(e)
   elseif e.y >= maph then
     wy = e.y + math.random(-30,-500)
   else
-    wy = e.y + math.random(-500, 500)
+    wy = math.random(0, maph)
   end
 
   return wx, wy
