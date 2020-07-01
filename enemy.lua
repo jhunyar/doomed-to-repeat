@@ -60,14 +60,14 @@ function updateEnemies(dt)
     targetPlanet = {}
     --
     for j,p in ipairs(planets) do
-      if distanceBetween(e.x, e.y, p.x + p.size/2, p.y + p.size/2) < 300 then
+      if distanceBetween(e.x, e.y, p.x + p.size/2, p.y + p.size/2) < 500 then
         planetInRange = true
         targetPlanet = p
       end
     end
 
     -- track the player if too close
-    if distanceBetween(e.x, e.y, player.body:getX(), player.body:getY()) < 200 then
+    if distanceBetween(e.x, e.y, player.body:getX(), player.body:getY()) < 300 then
       e.angle = enemy_player_angle(e)
       e.x = e.x + math.cos(e.angle) * e.speed * dt
       e.y = e.y + math.sin(e.angle) * e.speed * dt
