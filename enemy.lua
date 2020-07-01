@@ -12,29 +12,34 @@ function spawnEnemy()
   enemy.dead = false
   enemy.arrived = false
 
-  local side = math.random(1, 4)
+  -- local side = math.random(1, 4)
 
-  if side == 1 then
-    enemy.x = -30
-    enemy.sx = -30
-    enemy.y = math.random(0, maph)
-    enemy.sy = math.random(0, maph)
-  elseif side == 2 then
-    enemy.x = math.random(0, mapw)
-    enemy.sx = math.random(0, mapw)
-    enemy.y = -30
-    enemy.sy = -30
-  elseif side == 3 then
-    enemy.x = mapw + 30
-    enemy.sx = mapw + 30
-    enemy.y = math.random(0, maph)
-    enemy.sy = math.random(0, maph)
-  else
-    enemy.x = math.random(0, mapw)
-    enemy.sx = math.random(0, mapw)
-    enemy.y = maph + 30
-    enemy.sy = maph + 30
-  end
+  enemy.x = math.random(0, mapw)
+  enemy.y = math.random(0, maph)
+  enemy.sx = math.random(0, mapw)
+  enemy.sy = math.random(0, maph)
+
+  -- if side == 1 then
+  --   enemy.x = -30
+  --   enemy.sx = -30
+  --   enemy.y = math.random(0, maph)
+  --   enemy.sy = math.random(0, maph)
+  -- elseif side == 2 then
+  --   enemy.x = math.random(0, mapw)
+  --   enemy.sx = math.random(0, mapw)
+  --   enemy.y = -30
+  --   enemy.sy = -30
+  -- elseif side == 3 then
+  --   enemy.x = mapw + 30
+  --   enemy.sx = mapw + 30
+  --   enemy.y = math.random(0, maph)
+  --   enemy.sy = math.random(0, maph)
+  -- else
+  --   enemy.x = math.random(0, mapw)
+  --   enemy.sx = math.random(0, mapw)
+  --   enemy.y = maph + 30
+  --   enemy.sy = maph + 30
+  -- end
 
   enemy.wx, enemy.wy = genWaypoint(enemy)
 

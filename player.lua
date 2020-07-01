@@ -85,7 +85,6 @@ function updatePlayer(dt)
     end
 
     local vx, vy = player.body:getLinearVelocity()
-    -- limits the velocity ONLY if it exceeds maxSpeed:
     vx, vy = clamp(vx, vy, player.maxSpeed)
     player.body:setLinearVelocity(vx, vy)
 
@@ -137,13 +136,4 @@ function updateBullets(dt)
     b.x = b.x + math.cos(b.direction) * b.speed * dt
     b.y = b.y + math.sin(b.direction) * b.speed * dt
   end
-end
-
-function clamp(x, y, d)
-  local d2 = math.sqrt(x*x + y*y)
-  if d2 > d then
-    x = x/d2*d
-    y = y/d2*d
-  end
-  return x, y, d2
 end

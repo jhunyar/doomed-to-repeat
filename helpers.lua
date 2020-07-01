@@ -18,3 +18,12 @@ end
 function getAngle(a, b)
   return math.atan2(b.y - a.y, b.x - a.x)
 end
+
+function clamp(x, y, d)
+  local d2 = math.sqrt(x*x + y*y)
+  if d2 > d then
+    x = x/d2*d
+    y = y/d2*d
+  end
+  return x, y, d2
+end
