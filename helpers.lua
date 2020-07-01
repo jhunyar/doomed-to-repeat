@@ -10,3 +10,7 @@ end
 function enemy_player_angle(enemy)
   return math.atan2(player.body:getY() - enemy.y, player.body:getX() - enemy.x)
 end
+
+function enemy_waypoint_angle(e)
+  return math.atan2(e.wy - e.y, e.wx - e.x)
+end

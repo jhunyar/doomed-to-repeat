@@ -15,6 +15,7 @@ player.maxFear = 100
 player.fear = 0
 player.maxAmmo = 100
 player.ammo = 100
+player.panicFireRate = 0.10
 player.sprite = sprites.shipStatic
 
 player.body:setMass(500)
@@ -96,11 +97,11 @@ function updatePlayer(dt)
     end
 
     if player.fear > player.maxFear then
-      panicFireRate = panicFireRate - dt
-      if panicFireRate <= 0 and player.ammo > 0 then
+      player.panicFireRate = player.panicFireRate - dt
+      if player.panicFireRate <= 0 and player.ammo > 0 then
         spawnBullet()
 
-        panicFireRate = 0.10
+        player.panicFireRate = 0.10
       end
     end
 
@@ -122,4 +123,11 @@ function quantumLeap()
   local instance = sndLeap:play()
   x,y = cam:mousePosition()
   player.body:setPosition(player.body:getX() + 350 * math.cos(math.atan2(player.body:getY() - y, player.body:getX() - x) + math.pi), player.body:getY() + 350 * math.sin(math.atan2(player.body:getY() - y, player.body:getX() - x) + math.pi))
+end
+
+function updateBullets(dt)
+  for i,b in ipairs(bullets) do
+    b.x = b.x + math.cos(b.direction) * b.speed * dt
+    b.y = b.y + math.sin(b.direction) * b.speed * dt
+  end
 end

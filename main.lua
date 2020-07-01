@@ -6,13 +6,22 @@ function love.load()
   cursor = love.mouse.newCursor("sprites/cursor.png", 0, 0)
   love.mouse.setCursor(cursor)
 
-  sprites = {}
-  sprites.planets = {}
-  
-  for i = 1, 25, 1 do
-    table.insert(sprites.planets, love.graphics.newImage('sprites/planets/mars' .. i .. '.png'))
-  end
+  anim8 = require('anim8/anim8')
+  sti = require('sti/sti')
+  Camera = require('hump/camera')
+  Timer = require('hump/timer')
+  cam = Camera()
 
+  enemies = {}
+  bullets = {}
+  loots = {}
+  planets = {}
+
+  sprites = {}
+  sprites.planets = {}  
+    for i = 1, 25, 1 do
+      table.insert(sprites.planets, love.graphics.newImage('sprites/planets/mars' .. i .. '.png'))
+    end
   sprites.player = love.graphics.newImage('sprites/ship-static.png')
   sprites.shipStatic = love.graphics.newImage('sprites/ship-static.png')
   sprites.shipLeft = love.graphics.newImage('sprites/ship-left.png')
@@ -26,16 +35,18 @@ function love.load()
   sprites.background = love.graphics.newImage('sprites/bg.png')
   sprites.background:setWrap('repeat', 'repeat')
 
-  panicFireRate = 0.10
+  require('ui')
+  require('player')
+  require('enemy')
+  require('spawn')
+  require('helpers')
+  require('sound')
+  require('slam')
+
   lootTimer = 10
 
   color = {0, 1, 1}
   fade = false
-
-  enemies = {}
-  bullets = {}
-  loots = {}
-  planets = {}
 
   gameState = 1
   maxTime = 2
@@ -47,20 +58,6 @@ function love.load()
   fontSmall = love.graphics.newFont(20)
   fontTiny = love.graphics.newFont(10)
 
-  require('ui')
-  require('player')
-  require('enemy')
-  require('spawn')
-  require('helpers')
-  require('sound')
-  require('slam')
-
-  anim8 = require('anim8/anim8')
-  sti = require('sti/sti')
-  Camera = require('hump/camera')
-  Timer = require('hump/timer')
-  cam = Camera()
-
   gameMap = sti('maps/map.lua')
   mapw = gameMap.width * gameMap.tilewidth
   maph = gameMap.height * gameMap.tileheight
@@ -70,6 +67,9 @@ function love.load()
   for i, obj in pairs(gameMap.layers['planets'].objects) do
     spawnPlanet(obj.x, obj.y, obj.width) -- x, y, size
   end
+
+  ending:stop()
+  music:play()
 end
 
 function love.update(dt)
@@ -78,14 +78,16 @@ function love.update(dt)
   Timer.update(dt)
 
   updatePlayer(dt)
+  updateBullets(dt)
   updateEnemies(dt)
 
   -- cam:lookAt(player.body:getX(), player.body:getY())
   cam:lockPosition(player.body:getX(), player.body:getY(), cam.smooth.linear(500))
 
-  for i,b in ipairs(bullets) do
-    b.x = b.x + math.cos(b.direction) * b.speed * dt
-    b.y = b.y + math.sin(b.direction) * b.speed * dt
+  for i,p in ipairs(planets) do
+    if distanceBetween(p.x, p.y, player.body:getX(), player.body:getY()) < p.size/2+50 then
+      p.owner = 'player'
+    end
   end
 
   for i=#bullets, 1, -1 do
@@ -130,6 +132,7 @@ function love.update(dt)
 end
 
 function love.draw()
+  love.graphics.setColor(1,1,1)
   cam:attach()
   drawWorld()
   cam:detach()
@@ -139,23 +142,6 @@ function love.draw()
   drawHud()
 end
 
-function spawnPlanet(x, y, size)
-  planet = {}
-
-  planet.body = love.physics.newBody(myWorld, x, y, 'static')
-  planet.shape = love.physics.newCircleShape(size/2)
-  planet.fixture = love.physics.newFixture(planet.body, planet.shape)
-
-  planet.x = x
-  planet.y = y
-  planet.size = size
-
-  -- planet.grid = anim8.newGrid(256, 256, 2560, 2304)
-  -- planet.animation = anim8.newAnimation(planet.grid('1-10',1, '1-10',2, '1-10',3, '1-10',4, '1-10',5, '1-10',6, '1-10',7, '1-10',8, '1-10',9), 0.1)
-
-  table.insert(planets, planet)
-end
-
 function love.mousepressed(x, y, b, istouch)
   if b == 1 and gameState == 2 and player.ammo > 0 then
     spawnBullet()
@@ -163,8 +149,8 @@ function love.mousepressed(x, y, b, istouch)
 
   if b == 2 and gameState == 2 then
     quantumLeap()
-    fade = true
-    Timer.tween(3, color, {1,1,1}, 'in-out-linear', function() color = {0,1,1} fade = false end)  
+    -- fade = true
+    -- Timer.tween(3, color, {1,1,1}, 'in-out-linear', function() color = {0,1,1} fade = false end)  
   end
 
   if gameState == 1 then
@@ -187,6 +173,14 @@ function love.keyreleased(key)
       showHUD = false
     elseif not showHUD then
       showHUD = true
+    end
+  end
+
+  if key == 'q' then
+    if player.linearDamping == 0 then
+      player.linearDamping = 5 -- TODO is his going to cause problems later since player.linearDamping is a variable?
+    else
+      player.linearDamping = 0
     end
   end
 
@@ -218,9 +212,9 @@ end
 
 function drawWorld()
   love.graphics.setColor(1,1,1)
-  if fade == true then
-      love.graphics.setColor(color)
-  end
+  -- if fade == true then
+  --     love.graphics.setColor(color)
+  -- end
 
   gameMap:drawLayer(gameMap.layers['Tile Layer 1'])
 
@@ -228,8 +222,12 @@ function drawWorld()
 
   for i,p in ipairs(planets) do
     -- p.animation:draw(sprites.planetAnim, p.x, p.y, nil, p.size/260, p.size/260, 128, 128)
-
     love.graphics.draw(sprites.planets[i], p.x, p.y, nil, p.size/sprites.planets[i]:getWidth(), p.size/sprites.planets[i]:getWidth(), sprites.planets[i]:getWidth()/2, sprites.planets[i]:getHeight()/2)
+    if p.owner == 'player' then
+      love.graphics.setColor(0,0.5,1)
+      love.graphics.rectangle( 'fill', p.x-10, p.y-10, 20, 20 )
+      love.graphics.setColor(1,1,1)
+    end
   end
 
   for i,l in ipairs(loots) do
