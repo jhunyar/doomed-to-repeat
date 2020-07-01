@@ -72,6 +72,10 @@ function love.load()
     spawnPlanet(obj.x, obj.y, obj.width) -- x, y, size
   end
 
+  for i = 1, 100, 2 do
+    spawnEnemy()
+  end
+
   ending:stop()
   music:play()
 end
@@ -121,12 +125,12 @@ function love.update(dt)
   end
 
   if gameState == 2 then
-    timer = timer - dt
-    if timer <= 0 then
-      spawnEnemy()
-      maxTime = maxTime * 0.98
-      timer = maxTime
-    end
+    -- timer = timer - dt
+    -- if timer <= 0 then
+    --   spawnEnemy()
+    --   maxTime = maxTime * 0.98
+    --   timer = maxTime
+    -- end
 
     lootTimer = lootTimer - dt
     if lootTimer <= 0 then
