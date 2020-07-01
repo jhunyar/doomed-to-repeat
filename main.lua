@@ -23,6 +23,7 @@ function love.load()
       table.insert(sprites.planets, love.graphics.newImage('sprites/planets/mars' .. i .. '.png'))
     end
   sprites.player = love.graphics.newImage('sprites/ship-static.png')
+  sprites.miniShip = love.graphics.newImage('sprites/miniship.png')
   sprites.shipStatic = love.graphics.newImage('sprites/ship-static.png')
   sprites.shipLeft = love.graphics.newImage('sprites/ship-left.png')
   sprites.shipRight = love.graphics.newImage('sprites/ship-right.png')
@@ -54,6 +55,7 @@ function love.load()
   timer = maxTime
   score = 0
   showHUD = true
+  showMap = true
 
   fontLarge = love.graphics.newFont(40)
   fontSmall = love.graphics.newFont(20)
@@ -142,6 +144,7 @@ function love.draw()
   camX,camY = cam:cameraCoords(player.body:getX(), player.body:getY())
 
   drawHud()
+  drawMinimap()
 end
 
 function love.mousepressed(x, y, b, istouch)
@@ -173,8 +176,16 @@ function love.keyreleased(key)
   if key == 'h' then
     if showHUD then
       showHUD = false
-    elseif not showHUD then
+    else
       showHUD = true
+    end
+  end
+
+  if key == 'm' then
+    if showMap then
+      showMap = false
+    else
+      showMap = true
     end
   end
 
