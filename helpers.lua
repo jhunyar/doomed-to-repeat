@@ -27,3 +27,24 @@ function clamp(x, y, d)
   end
   return x, y, d2
 end
+
+function gravityWell(body, x, y, power, epsilon)
+  local lx = x - body:getX()  -- vector x
+  local ly = y - body:getY()  -- vector y
+  local ldSq = lx^2 + ly^2    -- direction
+
+  power = power * 10000 or 100000
+  epsilon = epsilon * epsilon or 50 * 50
+
+  if ldSq ~= 0 then
+    local ld = math.sqrt(ldSq)
+    -- removing the below code makes the gravity the same on all planets
+    -- if ldSq < epsilon then
+    --   ldSq = epsilon
+    -- end
+      
+    local lfactor = (power * love.timer.getDelta()) / (ldSq * ld)
+    local oldX, oldY = body:getLinearVelocity()
+    body:setLinearVelocity(oldX + lx * lfactor, oldY + ly * lfactor)
+  end
+end
