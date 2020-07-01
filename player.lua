@@ -9,6 +9,7 @@ player.body = love.physics.newBody(myWorld, mapw/2, maph/2, 'dynamic')
 player.shape = love.physics.newRectangleShape(90, 90)
 player.fixture = love.physics.newFixture(player.body, player.shape)
 
+player.linearDampingStatus = 'OFF'
 player.linearDamping = 0
 player.thrust = 100
 player.maxSpeed = 600
