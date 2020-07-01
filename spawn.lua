@@ -1,19 +1,3 @@
-function spawnBullet()
-  local instance = sndShoot:play()
-
-  bullet = {}
-
-  bullet.x = player.body:getX()
-  bullet.y = player.body:getY()
-  bullet.speed = 1000
-  bullet.direction = player_mouse_angle()
-  bullet.dead = false
-
-  table.insert(bullets, bullet)
-
-  player.ammo = player.ammo - 1
-end
-
 function spawnLoot()
   loot = {}
 

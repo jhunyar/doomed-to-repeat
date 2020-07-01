@@ -132,6 +132,22 @@ function quantumLeap()
   player.body:setPosition(player.body:getX() + 350 * math.cos(math.atan2(player.body:getY() - y, player.body:getX() - x) + math.pi), player.body:getY() + 350 * math.sin(math.atan2(player.body:getY() - y, player.body:getX() - x) + math.pi))
 end
 
+function spawnBullet()
+  local instance = sndShoot:play()
+
+  bullet = {}
+
+  bullet.x = player.body:getX()
+  bullet.y = player.body:getY()
+  bullet.speed = 1000
+  bullet.direction = player_mouse_angle()
+  bullet.dead = false
+
+  table.insert(bullets, bullet)
+
+  player.ammo = player.ammo - 1
+end
+
 function updateBullets(dt)
   for i,b in ipairs(bullets) do
     b.x = b.x + math.cos(b.direction) * b.speed * dt
