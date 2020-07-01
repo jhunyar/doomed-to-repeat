@@ -108,8 +108,21 @@ function drawEnemies()
 end
 
 function genWaypoint(e)
-  wx = e.x + math.random(-500, 500)
-  wy = e.y + math.random(-500, 500)
+  if e.x <= 0 then
+    wx = e.x + math.random(30,500)
+  elseif e.x >= mapw then
+    wx = e.x + math.random(-30,-500)
+  else
+    wx = e.x + math.random(-500, 500)
+  end
+
+  if e.y <= 0 then
+    wy = e.y + math.random(30,500)
+  elseif e.y >= maph then
+    wy = e.y + math.random(-30,-500)
+  else
+    wy = e.y + math.random(-500, 500)
+  end
 
   return wx, wy
 end
