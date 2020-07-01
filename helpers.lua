@@ -14,3 +14,7 @@ end
 function enemy_waypoint_angle(e)
   return math.atan2(e.wy - e.y, e.wx - e.x)
 end
+
+function getAngle(a, b)
+  return math.atan2(b.y - a.y, b.x - a.x)
+end

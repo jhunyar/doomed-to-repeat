@@ -45,22 +45,37 @@ end
 function updateEnemies(dt)
   for i,e in ipairs(enemies) do
     if distanceBetween(e.x, e.y, e.wx, e.wy) < 50 then -- enemy has arrived in vicinity of waypoint
-      nx, ny = genWaypoint(e)
+      nx, ny = genWaypoint()
       e.wx = nx
       e.wy = ny
     end
 
-    -- track the player if too close
-    if distanceBetween(e.x, e.y, player.body:getX(), player.body:getY()) < 500 then
-      e.angle = enemy_player_angle(e)
-      e.x = e.x + math.cos(enemy_player_angle(e)) * e.speed * dt
-      e.y = e.y + math.sin(enemy_player_angle(e)) * e.speed * dt
-    else -- move enemy towards waypoint
-      e.angle = enemy_waypoint_angle(e)
-      e.x = e.x + math.cos(enemy_waypoint_angle(e)) * e.speed * dt
-      e.y = e.y + math.sin(enemy_waypoint_angle(e)) * e.speed * dt
+    -- check for habitable worlds
+    planetInRange = false
+    targetPlanet = {}
+    --
+    for j,p in ipairs(planets) do
+      if distanceBetween(e.x, e.y, p.x + p.size/2, p.y + p.size/2) < 300 then
+        planetInRange = true
+        targetPlanet = p
+      end
     end
     
+    -- track the player if too close
+    if distanceBetween(e.x, e.y, player.body:getX(), player.body:getY()) < 200 then
+      e.angle = enemy_player_angle(e)
+      e.x = e.x + math.cos(e.angle) * e.speed * dt
+      e.y = e.y + math.sin(e.angle) * e.speed * dt
+    elseif planetInRange and (targetPlanet.owner == 'player' or targetPlanet.owner == 'none') then
+      e.angle = getAngle(e, targetPlanet)
+      e.x = e.x + math.cos(e.angle) * e.speed * dt
+      e.y = e.y + math.sin(e.angle) * e.speed * dt
+    else -- move enemy towards waypoint
+      e.angle = enemy_waypoint_angle(e)
+      e.x = e.x + math.cos(e.angle) * e.speed * dt
+      e.y = e.y + math.sin(e.angle) * e.speed * dt
+    end
+
     if distanceBetween(e.x, e.y, player.body:getX(), player.body:getY()) < 30 then
       enemies = {}
       loots = {}
@@ -107,22 +122,17 @@ function drawEnemies()
   end
 end
 
-function genWaypoint(e)
-  if e.x <= 0 then
-    wx = e.x + math.random(30,500)
-  elseif e.x >= mapw then
-    wx = e.x + math.random(-30,-500)
-  else
-    wx = math.random(0, mapw)
-  end
-
-  if e.y <= 0 then
-    wy = e.y + math.random(30,500)
-  elseif e.y >= maph then
-    wy = e.y + math.random(-30,-500)
-  else
-    wy = math.random(0, maph)
-  end
-
+function genWaypoint()
+  wx = math.random(0,mapw)
+  wy = math.random(0,maph)
   return wx, wy
 end
+
+function planetInRange(e)
+  for i,p in ipairs(planets) do
+    if p.owner == 'player' or p.owner == 'none' and distanceBetween(e.x, e.y, p.x + p.size/2, p.y + p.size/2) < 500 then
+      
+    end
+  end
+end
+
