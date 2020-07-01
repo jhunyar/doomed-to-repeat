@@ -29,7 +29,7 @@ function love.load()
   sprites.shipRight = love.graphics.newImage('sprites/ship-right.png')
   sprites.shipFront = love.graphics.newImage('sprites/ship-front.png')
   sprites.shipRear = love.graphics.newImage('sprites/ship-rear.png')
-  sprites.bullet = love.graphics.newImage('sprites/bullet2.png')
+  sprites.bullet = love.graphics.newImage('sprites/bullet3.png')
   sprites.enemy = love.graphics.newImage('sprites/enemy.png')
   sprites.loot = love.graphics.newImage('sprites/bullet.png')
   sprites.planetAnim = love.graphics.newImage('sprites/planets/marssprites.png')
@@ -255,6 +255,6 @@ function drawWorld()
   drawEnemies()
 
   for i,b in ipairs(bullets) do
-    love.graphics.draw(sprites.bullet, b.x, b.y, b.direction, 1, 1, sprites.bullet:getWidth()/2, sprites.bullet:getHeight()/2)
+    love.graphics.draw(sprites.bullet, b.x, b.y, b.direction, 1, 1, sprites.bullet:getWidth(), sprites.bullet:getHeight())
   end
 end

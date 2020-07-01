@@ -26,7 +26,7 @@ function drawMinimap()
     for i,p in ipairs(planets) do
       if p.discovered == true then
         local planetSize
-        if p.size < 100 then
+        if p.size < 400 then
           planetSize = 4
         else
           planetSize = p.size/100/2

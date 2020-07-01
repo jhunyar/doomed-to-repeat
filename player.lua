@@ -11,6 +11,8 @@ player.fixture = love.physics.newFixture(player.body, player.shape)
 
 player.linearDamping = 0
 player.thrust = 100
+player.maxSpeed = 600
+
 player.maxFear = 100
 player.fear = 0
 player.maxAmmo = 100
@@ -82,6 +84,11 @@ function updatePlayer(dt)
       end
     end
 
+    local vx, vy = player.body:getLinearVelocity()
+    -- limits the velocity ONLY if it exceeds maxSpeed:
+    vx, vy = clamp(vx, vy, player.maxSpeed)
+    player.body:setLinearVelocity(vx, vy)
+
     for i,l in ipairs(loots) do
       if distanceBetween(l.x, l.y, player.body:getX(), player.body:getY()) < 30 then
         if l.type == 'ammo' then
@@ -130,4 +137,13 @@ function updateBullets(dt)
     b.x = b.x + math.cos(b.direction) * b.speed * dt
     b.y = b.y + math.sin(b.direction) * b.speed * dt
   end
+end
+
+function clamp(x, y, d)
+  local d2 = math.sqrt(x*x + y*y)
+  if d2 > d then
+    x = x/d2*d
+    y = y/d2*d
+  end
+  return x, y, d2
 end
