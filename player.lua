@@ -35,11 +35,11 @@ function updatePlayer(dt)
 
     if love.keyboard.isDown('s') and player.body:getY() < maph then -- and player.body:getY() < love.graphics.getHeight()
       player.body:applyForce(0, player.thrust*1000)
-      if player_mouse_angle() > 4 and player_mouse_angle() < 5.5 then
+      if player.body:getAngle() > 4 and player.body:getAngle() < 5.5 then
         player.sprite = sprites.shipFront
-      elseif player_mouse_angle() < 4 and player_mouse_angle() > 2.3 then
+      elseif player.body:getAngle() < 4 and player.body:getAngle() > 2.3 then
         player.sprite = sprites.shipRight
-      elseif player_mouse_angle() < 2.3 and player_mouse_angle() > 0.65 then
+      elseif player.body:getAngle() < 2.3 and player.body:getAngle() > 0.65 then
         player.sprite = sprites.shipRear
       else
         player.sprite = sprites.shipLeft
@@ -48,11 +48,11 @@ function updatePlayer(dt)
 
     if love.keyboard.isDown('w') and player.body:getY() > 0 then -- and player.body:getY() > 0
       player.body:applyForce(0, -player.thrust*1000)
-      if player_mouse_angle() > 4 and player_mouse_angle() < 5.5 then
+      if player.body:getAngle() > 4 and player.body:getAngle() < 5.5 then
         player.sprite = sprites.shipRear
-      elseif player_mouse_angle() < 4 and player_mouse_angle() > 2.3 then
+      elseif player.body:getAngle() < 4 and player.body:getAngle() > 2.3 then
         player.sprite = sprites.shipLeft
-      elseif player_mouse_angle() < 2.3 and player_mouse_angle() > 0.65 then
+      elseif player.body:getAngle() < 2.3 and player.body:getAngle() > 0.65 then
         player.sprite = sprites.shipFront
       else
         player.sprite = sprites.shipRight
@@ -61,11 +61,11 @@ function updatePlayer(dt)
 
     if love.keyboard.isDown('a') and player.body:getX() > 0 then -- and player.body:getX() > 0
       player.body:applyForce(-player.thrust*1000, 0)
-      if player_mouse_angle() > 4 and player_mouse_angle() < 5.5 then
+      if player.body:getAngle() > 4 and player.body:getAngle() < 5.5 then
         player.sprite = sprites.shipRight
-      elseif player_mouse_angle() < 4 and player_mouse_angle() > 2.3 then
+      elseif player.body:getAngle() < 4 and player.body:getAngle() > 2.3 then
         player.sprite = sprites.shipRear
-      elseif player_mouse_angle() < 2.3 and player_mouse_angle() > 0.65 then
+      elseif player.body:getAngle() < 2.3 and player.body:getAngle() > 0.65 then
         player.sprite = sprites.shipLeft
       else
         player.sprite = sprites.shipFront
@@ -74,11 +74,11 @@ function updatePlayer(dt)
 
     if love.keyboard.isDown('d') and player.body:getX() < mapw then -- and player.body:getX() < love.graphics.getWidth()
       player.body:applyForce(player.thrust*1000, 0)
-      if player_mouse_angle() > 4 and player_mouse_angle() < 5.5 then
+      if player.body:getAngle() > 4 and player.body:getAngle() < 5.5 then
         player.sprite = sprites.shipLeft
-      elseif player_mouse_angle() < 4 and player_mouse_angle() > 2.3 then
+      elseif player.body:getAngle() < 4 and player.body:getAngle() > 2.3 then
         player.sprite = sprites.shipFront
-      elseif player_mouse_angle() < 2.3 and player_mouse_angle() > 0.65 then
+      elseif player.body:getAngle() < 2.3 and player.body:getAngle() > 0.65 then
         player.sprite = sprites.shipRight
       else
         player.sprite = sprites.shipRear
@@ -123,7 +123,7 @@ function updatePlayer(dt)
 end
 
 function drawPlayer()
-  love.graphics.draw(player.sprite, player.body:getX(), player.body:getY(), player_mouse_angle(), 1, 1, sprites.player:getWidth()/2, sprites.player:getHeight()/2)
+  love.graphics.draw(player.sprite, player.body:getX(), player.body:getY(), player.body:getAngle(), 1, 1, sprites.player:getWidth()/2, sprites.player:getHeight()/2)
 end
 
 function quantumLeap()
@@ -140,7 +140,7 @@ function spawnBullet()
   bullet.x = player.body:getX()
   bullet.y = player.body:getY()
   bullet.speed = 1000
-  bullet.direction = player_mouse_angle()
+  bullet.direction = player.body:getAngle()
   bullet.dead = false
 
   table.insert(bullets, bullet)
