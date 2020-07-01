@@ -196,7 +196,7 @@ function love.keyreleased(key)
 
   if key == 'q' then
     if player.linearDamping == 0 then
-      player.linearDamping = 5 -- TODO is his going to cause problems later since player.linearDamping is a variable?
+      player.linearDamping = 3 -- TODO is his going to cause problems later since player.linearDamping is a variable?
     else
       player.linearDamping = 0
     end
