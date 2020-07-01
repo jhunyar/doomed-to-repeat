@@ -43,6 +43,6 @@ function drawMinimap()
       end
     end
 
-    love.graphics.draw(sprites.miniShip, love.graphics:getWidth() -300 + player.body:getX()/100, love.graphics.getHeight() - 300 + player.body:getY()/100, player_mouse_angle(), nil, nil, sprites.miniShip:getWidth()/2, sprites.miniShip:getHeight()/2)
+    love.graphics.draw(sprites.miniShip, love.graphics:getWidth() -300 + player.body:getX()/100, love.graphics.getHeight() - 300 + player.body:getY()/100, player.body:getAngle(), nil, nil, sprites.miniShip:getWidth()/2, sprites.miniShip:getHeight()/2)
   end
 end
