@@ -61,7 +61,7 @@ function love.load()
   fontSmall = love.graphics.newFont(20)
   fontTiny = love.graphics.newFont(10)
 
-  gameMap = sti('maps/map.lua')
+  gameMap = sti('maps/map-lg.lua')
   mapw = gameMap.width * gameMap.tilewidth
   maph = gameMap.height * gameMap.tileheight
   cam:lookAt(mapw/2, maph/2)

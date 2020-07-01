@@ -60,7 +60,7 @@ function updateEnemies(dt)
         targetPlanet = p
       end
     end
-    
+
     -- track the player if too close
     if distanceBetween(e.x, e.y, player.body:getX(), player.body:getY()) < 200 then
       e.angle = enemy_player_angle(e)
@@ -77,6 +77,10 @@ function updateEnemies(dt)
     end
 
     if distanceBetween(e.x, e.y, player.body:getX(), player.body:getY()) < 30 then
+      for i,p in ipairs(planets) do
+        p.owner = 'none'
+        p.discovered = false
+      end
       enemies = {}
       loots = {}
       bullets = {}

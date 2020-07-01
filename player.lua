@@ -1,5 +1,5 @@
 sti = require('sti/sti')
-gameMap = sti('maps/map.lua')
+gameMap = sti('maps/map-lg.lua')
 
 mapw = gameMap.width * gameMap.tilewidth
 maph = gameMap.height * gameMap.tileheight

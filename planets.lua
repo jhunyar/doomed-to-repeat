@@ -8,6 +8,7 @@ function spawnPlanet(x, y, size)
   planet.x = x
   planet.y = y
   planet.size = size
+  planet.discovered = false
   planet.owner = 'none'
 
   -- planet.grid = anim8.newGrid(256, 256, 2560, 2304)
@@ -19,6 +20,10 @@ end
 function updatePlanets()
   -- enemy claims planet
   for i,p in ipairs(planets) do
+    if distanceBetween(p.x, p.y, player.body:getX(), player.body:getY()) < 1000 then
+      p.discovered = true
+    end
+
     for j,e in ipairs(enemies) do    -- enemy claims planet
       if distanceBetween(e.x, e.y, p.x, p.y) < p.size/2 then
         p.owner = 'enemy'
