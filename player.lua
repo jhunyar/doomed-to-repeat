@@ -202,4 +202,7 @@ function updateTorque()
   end
 
   player.body:applyTorque(torque)
+
+  fltAngle = player.body:getAngle() % (2*math.pi)
+  player.body:setAngle(fltAngle)
 end
