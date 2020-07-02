@@ -11,6 +11,7 @@ function spawnEnemy()
   enemy.speed = 140
   enemy.dead = false
   enemy.arrived = false
+  enemy.health = 3
 
   -- local side = math.random(1, 4)
 
@@ -95,24 +96,22 @@ function updateEnemies(dt)
       player.body:setPosition(mapw/2, maph/2)
       cam:lookAt(mapw/2, maph/2)
     end
-
-    if distanceBetween(e.x, e.y, player.body:getX(), player.body:getY()) < 100 then
-      player.fear = player.fear + 3 * dt
-    elseif distanceBetween(e.x, e.y, player.body:getX(), player.body:getY()) < 200 then
-      player.fear = player.fear + 2 * dt
-    elseif distanceBetween(e.x, e.y, player.body:getX(), player.body:getY()) < 300 then
-      player.fear = player.fear + 1 * dt
-    end
   end
 
   for i,e in ipairs(enemies) do
+    if e.health == 0 then
+      e.dead = true
+      score = score + 1
+      player.ammo = player.ammo + 1
+    end
+
     for j,b in ipairs(bullets) do
       if distanceBetween(e.x, e.y, b.x, b.y) < 20 then
         sndDestroy:play()
-        e.dead = true
+        if e.health > 0 then
+          e.health = e.health - 1
+        end
         b.dead = true
-        score = score + 1
-        player.ammo = player.ammo + 1
       end
     end
   end
