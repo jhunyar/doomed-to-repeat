@@ -33,56 +33,94 @@ function updatePlayer(dt)
     else
       player.body:setLinearDamping(player.linearDamping)
     end
+
+    local av = player.body:getAngularVelocity()
   
+    if av < -0.5 then player.sprite = sprites.shipRotL
+    elseif av > 0.5 then player.sprite = sprites.shipRotR
+    else player.sprite = sprites.shipStatic end
+
     if love.keyboard.isDown('s') and player.body:getY() < maph then -- and player.body:getY() < love.graphics.getHeight()
       player.body:applyForce(0, player.thrust*1000)
       if player.body:getAngle() > 3.93 and player.body:getAngle() < 5.5 then
-        player.sprite = sprites.shipFront
+        if av < -0.5 then player.sprite = sprites.shipFrontRotL
+        elseif av > 0.5 then player.sprite = sprites.shipFrontRotR
+        else player.sprite = sprites.shipFront end
       elseif player.body:getAngle() < 3.93 and player.body:getAngle() > 2.36 then
-        player.sprite = sprites.shipRight
+        if av < -0.5 then player.sprite = sprites.shipRightRotL
+        elseif av > 0.5 then player.sprite = sprites.shipRightRotR
+        else player.sprite = sprites.shipRight end
       elseif player.body:getAngle() < 2.36 and player.body:getAngle() > 0.79 then
-        player.sprite = sprites.shipRear
+        if av < -0.5 then player.sprite = sprites.shipRearRotL
+        elseif av > 0.5 then player.sprite = sprites.shipRearRotR
+        else player.sprite = sprites.shipRear end
       else
-        player.sprite = sprites.shipLeft
+        if av < -0.5 then player.sprite = sprites.shipLeftRotL
+        elseif av > 0.5 then player.sprite = sprites.shipLeftRotR
+        else player.sprite = sprites.shipLeft end
       end
     end
 
     if love.keyboard.isDown('w') and player.body:getY() > 0 then -- and player.body:getY() > 0
       player.body:applyForce(0, -player.thrust*1000)
       if player.body:getAngle() > 3.93 and player.body:getAngle() < 5.5 then
-        player.sprite = sprites.shipRear
+        if av < -0.5 then player.sprite = sprites.shipRearRotL
+        elseif av > 0.5 then player.sprite = sprites.shipRearRotR
+        else player.sprite = sprites.shipRear end
       elseif player.body:getAngle() < 3.93 and player.body:getAngle() > 2.36 then
-        player.sprite = sprites.shipLeft
+        if av < -0.5 then player.sprite = sprites.shipLeftRotL
+        elseif av > 0.5 then player.sprite = sprites.shipLeftRotR
+        else player.sprite = sprites.shipLeft end
       elseif player.body:getAngle() < 2.36 and player.body:getAngle() > 0.79 then
-        player.sprite = sprites.shipFront
+        if av < -0.5 then player.sprite = sprites.shipFrontRotL
+        elseif av > 0.5 then player.sprite = sprites.shipFrontRotR
+        else player.sprite = sprites.shipFront end
       else
-        player.sprite = sprites.shipRight
+        if av < -0.5 then player.sprite = sprites.shipRightRotL
+        elseif av > 0.5 then player.sprite = sprites.shipRightRotR
+        else player.sprite = sprites.shipRight end
       end
     end
 
     if love.keyboard.isDown('a') and player.body:getX() > 0 then -- and player.body:getX() > 0
       player.body:applyForce(-player.thrust*1000, 0)
       if player.body:getAngle() > 3.93 and player.body:getAngle() < 5.5 then
-        player.sprite = sprites.shipRight
+        if av < -0.5 then player.sprite = sprites.shipRightRotL
+        elseif av > 0.5 then player.sprite = sprites.shipRightRotR
+        else player.sprite = sprites.shipRight end
       elseif player.body:getAngle() < 3.93 and player.body:getAngle() > 2.36 then
-        player.sprite = sprites.shipRear
+        if av < -0.5 then player.sprite = sprites.shipRearRotL
+        elseif av > 0.5 then player.sprite = sprites.shipRearRotR
+        else player.sprite = sprites.shipRear end
       elseif player.body:getAngle() < 2.36 and player.body:getAngle() > 0.79 then
-        player.sprite = sprites.shipLeft
+        if av < -0.5 then player.sprite = sprites.shipLeftRotL
+        elseif av > 0.5 then player.sprite = sprites.shipLeftRotR
+        else player.sprite = sprites.shipLeft end
       else
-        player.sprite = sprites.shipFront
+        if av < -0.5 then player.sprite = sprites.shipFrontRotL
+        elseif av > 0.5 then player.sprite = sprites.shipFrontRotR
+        else player.sprite = sprites.shipFront end
       end
     end
 
     if love.keyboard.isDown('d') and player.body:getX() < mapw then -- and player.body:getX() < love.graphics.getWidth()
       player.body:applyForce(player.thrust*1000, 0)
       if player.body:getAngle() > 3.93 and player.body:getAngle() < 5.5 then
-        player.sprite = sprites.shipLeft
+        if av < -0.5 then player.sprite = sprites.shipLeftRotL
+        elseif av > 0.5 then player.sprite = sprites.shipLeftRotR
+        else player.sprite = sprites.shipLeft end
       elseif player.body:getAngle() < 3.93 and player.body:getAngle() > 2.36 then
-        player.sprite = sprites.shipFront
+        if av < -0.5 then player.sprite = sprites.shipFrontRotL
+        elseif av > 0.5 then player.sprite = sprites.shipFrontRotR
+        else player.sprite = sprites.shipFront end
       elseif player.body:getAngle() < 2.36 and player.body:getAngle() > 0.79 then
-        player.sprite = sprites.shipRight
+        if av < -0.5 then player.sprite = sprites.shipRightRotL
+        elseif av > 0.5 then player.sprite = sprites.shipRightRotR
+        else player.sprite = sprites.shipRight end
       else
-        player.sprite = sprites.shipRear
+        if av < -0.5 then player.sprite = sprites.shipRearRotL
+        elseif av > 0.5 then player.sprite = sprites.shipRearRotR
+        else player.sprite = sprites.shipRear end
       end
     end
 
@@ -130,7 +168,7 @@ function drawPlayer()
 end
 
 function launch()
-  -- local instance = sndLeap:play()
+  sndLaunch:play()
   mx,my = cam:mousePosition()
   bx,by = player.body:getPosition()
   dx, dy = mx - bx, my - by

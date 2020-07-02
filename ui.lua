@@ -13,8 +13,6 @@ function drawHud()
     love.graphics.print('Score: ' .. score, camX - 100, camY - 80)
     love.graphics.print('Ammo: ' .. player.ammo, camX + 60, camY - 80)
     love.graphics.print('L.Damp: ' .. player.linearDampingStatus, camX + 60, camY + 80)
-    love.graphics.print('M.Angle: ' .. math.floor(player_mouse_angle()) .. ' A: ' .. a, camX + 60, camY + 100)
-    love.graphics.print('Angle: ' .. math.floor(player.body:getAngle()), camX + 60, camY + 60)
     vx, vy = player.body:getLinearVelocity()
     if vx < 0 then vx = vx * -1 end
     if vy < 0 then vy = vy * -1 end
