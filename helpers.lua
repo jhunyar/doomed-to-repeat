@@ -48,3 +48,8 @@ function gravityWell(body, x, y, power, epsilon)
     body:setLinearVelocity(oldX + lx * lfactor, oldY + ly * lfactor)
   end
 end
+
+function radToDeg(r)
+  deg = r*180/math.pi
+  return deg
+end
