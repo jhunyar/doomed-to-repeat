@@ -158,7 +158,7 @@ function love.mousepressed(x, y, b, istouch)
   end
 
   if b == 2 and gameState == 2 then
-    quantumLeap()
+    launch()
     -- fade = true
     -- Timer.tween(3, color, {1,1,1}, 'in-out-linear', function() color = {0,1,1} fade = false end)  
   end

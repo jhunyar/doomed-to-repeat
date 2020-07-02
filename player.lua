@@ -88,12 +88,6 @@ function updatePlayer(dt)
 
     updateTorque()
 
-    -- if player.body:getAngle() < player_mouse_angle() then
-    --   player.body:applyTorque((player.body:getAngle() - player_mouse_angle()) * player.maxSpeed)
-    -- elseif player.body:getAngle() > player_mouse_angle() then
-    --   player.body:applyTorque((player.body:getAngle() - player_mouse_angle()) * player.maxSpeed)
-    -- end
-
     local vx, vy = player.body:getLinearVelocity()
     vx, vy = clamp(vx, vy, player.maxSpeed)
     player.body:setLinearVelocity(vx, vy)
@@ -135,10 +129,17 @@ function drawPlayer()
   love.graphics.draw(player.sprite, player.body:getX(), player.body:getY(), player.body:getAngle(), 1, 1, sprites.player:getWidth()/2, sprites.player:getHeight()/2)
 end
 
-function quantumLeap()
-  local instance = sndLeap:play()
-  x,y = cam:mousePosition()
-  player.body:setPosition(player.body:getX() + 350 * math.cos(math.atan2(player.body:getY() - y, player.body:getX() - x) + math.pi), player.body:getY() + 350 * math.sin(math.atan2(player.body:getY() - y, player.body:getX() - x) + math.pi))
+function launch()
+  -- local instance = sndLeap:play()
+  mx,my = cam:mousePosition()
+  bx,by = player.body:getPosition()
+  dx, dy = mx - bx, my - by
+  d = math.sqrt ( dx * dx + dy * dy )
+  ndx, ndy = dx / d, dy / d
+  impulse = 500000
+  ix, iy = ndx * impulse, ndy * impulse
+
+  player.body:applyLinearImpulse(ix, iy, player.body:getX(), player.body:getY())
 end
 
 function spawnBullet()
