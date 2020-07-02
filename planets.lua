@@ -20,7 +20,7 @@ end
 function updatePlanets()
   -- enemy claims planet
   for i,p in ipairs(planets) do
-    if distanceBetween(p.x, p.y, player.body:getX(), player.body:getY()) < 1000 then
+    if distanceBetween(p.x, p.y, player.body:getX(), player.body:getY()) < p.size/2 + 1000 then
       p.discovered = true
     end
 
