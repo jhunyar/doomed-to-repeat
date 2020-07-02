@@ -156,6 +156,8 @@ function launch()
   ndx, ndy = dx / d, dy / d
   impulse = 500000
   ix, iy = ndx * impulse, ndy * impulse
+  player.linearDamping = 0
+  player.linearDampingStatus = 'OFF'
 
   player.body:applyLinearImpulse(ix, iy, player.body:getX(), player.body:getY())
 end
