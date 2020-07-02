@@ -15,11 +15,8 @@ player.thrust = 100
 player.maxSpeed = 600
 player.maxTorque = 10^5
 
-player.maxFear = 100
-player.fear = 0
 player.maxAmmo = 100
 player.ammo = 100
-player.panicFireRate = 0.10
 player.sprite = sprites.shipStatic
 
 player.body:setMass(500)
@@ -142,23 +139,6 @@ function updatePlayer(dt)
 
     for i,p in ipairs(planets) do
       gravityWell(player.body, p.x, p.y, p.size*10, p.size*4) -- body, x, y, power, epsilon
-    end
-
-    if player.fear > player.maxFear then
-      player.panicFireRate = player.panicFireRate - dt
-      if player.panicFireRate <= 0 and player.ammo > 0 then
-        spawnBullet()
-
-        player.panicFireRate = 0.10
-      end
-    end
-
-    if player.fear > 0 then
-      player.fear = player.fear - 2 * dt
-    end
-
-    if player.fear < 0 then
-      player.fear = 0
     end
   end
 end

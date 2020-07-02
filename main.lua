@@ -179,7 +179,6 @@ function love.mousepressed(x, y, b, istouch)
     timer = maxTime
     score = 0
     player.ammo = player.maxAmmo
-    player.fear = 0
   end
 end
 
