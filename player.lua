@@ -176,6 +176,12 @@ function spawnBullet()
   player.ammo = player.ammo - 1
 end
 
+function drawBullets()
+  for i,b in ipairs(bullets) do
+    love.graphics.draw(sprites.bullet, b.x, b.y, b.direction, 1, 1, sprites.bullet:getWidth(), sprites.bullet:getHeight())
+  end
+end
+
 function updateBullets(dt)
   for i,b in ipairs(bullets) do
     b.x = b.x + math.cos(b.direction) * b.speed * dt

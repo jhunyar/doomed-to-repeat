@@ -31,3 +31,24 @@ function updatePlanets()
     end
   end
 end
+
+function drawPlanets()
+  for i,p in ipairs(planets) do
+    -- p.animation:draw(sprites.planetAnim, p.x, p.y, nil, p.size/260, p.size/260, 128, 128)
+
+    if p.size > 500 then
+      love.graphics.draw(sprites.planetLg, p.x, p.y, nil, p.size/sprites.planetLg:getWidth(), p.size/sprites.planetLg:getWidth(), sprites.planetLg:getWidth()/2, sprites.planetLg:getHeight()/2)
+    else
+      love.graphics.draw(sprites.planets[i], p.x, p.y, nil, p.size/sprites.planets[i]:getWidth(), p.size/sprites.planets[i]:getWidth(), sprites.planets[i]:getWidth()/2, sprites.planets[i]:getHeight()/2)
+    end
+    if p.owner == 'player' then
+      love.graphics.setColor(0,0.2,1)
+      love.graphics.rectangle( 'fill', p.x-10, p.y-10, 20, 20 )
+      love.graphics.setColor(1,1,1)
+    elseif p.owner == 'enemy' then
+      love.graphics.setColor(1,0,0)
+      love.graphics.rectangle( 'fill', p.x-10, p.y-10, 20, 20 )
+      love.graphics.setColor(1,1,1)
+    end
+  end
+end
