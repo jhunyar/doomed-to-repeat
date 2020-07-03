@@ -5,14 +5,14 @@ function spawnPlanet(x, y, size)
   planet.shape = love.physics.newCircleShape(size/2)
   planet.fixture = love.physics.newFixture(planet.body, planet.shape)
 
-  local moonAngle = math.random(math.rad(0-360))
+  local moonAngle = math.rad(math.random(0, 360))
 
   planet.x = x
   planet.y = y
   planet.size = size
   planet.discovered = false
   planet.owner = 'none'
-  planet.orbit = planet.size/2 * math.random(1.3, 1.6)
+  planet.orbit = planet.size * math.random(2, 4)
   planet.moon = math.random(0, 1)
   planet.moonSize = 200
   planet.moonX = planet.x + planet.orbit * math.cos(moonAngle)
@@ -30,6 +30,7 @@ function updatePlanets()
   for i,p in ipairs(planets) do
     if distanceBetween(p.x, p.y, player.body:getX(), player.body:getY()) < p.size/2 + 1000 then
       p.discovered = true
+      if p.moon == 1 then p.moonDiscovered = true end
     end
 
     if p.moon == 1 and distanceBetween(p.moonX, p.moonY, player.body:getX(), player.body:getY()) < p.moonSize/2 + 1000 then
@@ -64,7 +65,12 @@ function drawPlanets()
     end
 
     if p.moon == 1 then
-      love.graphics.draw(sprites.moons[i], p.moonX, p.moonY, nil, p.moonSize/sprites.moons[i]:getWidth(), p.moonSize/sprites.moons[i]:getHeight(), sprites.moons[i]:getWidth(), sprites.moons[i]:getHeight())
+      if p.discovered == true then
+        love.graphics.circle('line', p.x, p.y, distanceBetween(p.x, p.y, p.moonX, p.moonY))
+      end
+
+      -- TODO find out why I can't use [i] here anymore without breaking the game
+      love.graphics.draw(sprites.moons[1], p.moonX, p.moonY, nil, p.moonSize/sprites.moons[1]:getWidth(), p.moonSize/sprites.moons[1]:getHeight(), sprites.moons[1]:getWidth()/2, sprites.moons[1]:getHeight()/2)
     end
   end
 end

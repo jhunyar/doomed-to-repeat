@@ -10,14 +10,20 @@ function drawHud()
 
     love.graphics.setFont(fontTiny)
     love.graphics.setColor(0.5, 0.5, 0.5)
-    love.graphics.print('Score: ' .. score, camX - 100, camY - 80)
+    -- love.graphics.print('Score: ' .. score, camX - 100, camY - 80)
+    if player.warpReady == true then love.graphics.print('Warp Ready', camX - 100, camY - 100) end
+    love.graphics.print('Sector: ' .. player.currentSector, camX - 100, camY - 80)
     love.graphics.print('Ammo: ' .. player.ammo, camX + 60, camY - 80)
     love.graphics.print('L.Damp: ' .. player.linearDampingStatus, camX + 60, camY + 80)
     vx, vy = player.body:getLinearVelocity()
     if vx < 0 then vx = vx * -1 end
     if vy < 0 then vy = vy * -1 end
     love.graphics.print('Velocity: ' .. math.floor(vx+vy), camX + -100, camY + 80)
-    love.graphics.reset()
+    love.graphics.setColor(1, 1, 1)
+
+    if player.scannerData[1] then
+      love.graphics.printf(player.scannerData[1].data, 10, camY - 10, 200, 'left')
+    end
   end
 end
 
@@ -34,20 +40,13 @@ function drawMinimap()
           love.graphics.setColor(1, 0, 0)
         end
 
-        love.graphics.circle('fill', love.graphics:getWidth() -510 + p.x/2000, love.graphics.getHeight() - 510 + p.y/2000, 2)
+        love.graphics.circle('fill', love.graphics:getWidth() -510 + p.x/2000, love.graphics.getHeight() - 510 + p.y/2000, 4)
         love.graphics.setColor(1, 1, 1)
       end
 
-      -- if p.moon == 1 and p.moonDiscovered == true then
-      --   local moonSize
-      --   if p.moonSize < 400 then
-      --     moonSize = 4
-      --   else
-      --     moonSize = p.moonSize/100/2
-      --   end
-
-      --   love.graphics.circle('fill', love.graphics.getWidth() -300 + p.moonX/100, love.graphics.getHeight() - 300 + p.moonY/100, moonSize) 
-      -- end
+      if p.moon == 1 and p.moonDiscovered == true then
+        love.graphics.circle('fill', love.graphics.getWidth() -510 + p.moonX/2000, love.graphics.getHeight() - 510 + p.moonY/2000, 2) 
+      end
     end
 
     love.graphics.draw(sprites.miniShip, love.graphics:getWidth() -510 + player.body:getX()/2000, love.graphics.getHeight() - 510 + player.body:getY()/2000, player.body:getAngle(), nil, nil, sprites.miniShip:getWidth()/4, sprites.miniShip:getHeight()/4)

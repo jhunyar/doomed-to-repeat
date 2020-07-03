@@ -1,4 +1,4 @@
-function love.load()
+function love.load(arg)
   love.window.setMode(1920, 1080) -- {borderless=true}
 
   myWorld = love.physics.newWorld(0, 0, false)
@@ -73,8 +73,8 @@ function love.update(dt)
   updateEnemies(dt)
   updatePlanets()
 
-  -- cam:lookAt(player.body:getX(), player.body:getY())
-  cam:lockPosition(player.body:getX(), player.body:getY(), cam.smooth.linear(500))
+  cam:lookAt(player.body:getX(), player.body:getY())
+  -- cam:lockPosition(player.body:getX(), player.body:getY(), cam.smooth.linear(500))
 
   for i,p in ipairs(planets) do
     if distanceBetween(p.x, p.y, player.body:getX(), player.body:getY()) < p.size/2+50 then
@@ -88,10 +88,6 @@ function love.update(dt)
       table.remove(bullets, i)
     end
   end
-
-  -- for i,p in ipairs(planets) do
-  --   -- p.animation:update(dt)
-  -- end
 
   for i=#bullets, 1, -1 do
     local b = bullets[i]
@@ -108,13 +104,6 @@ function love.update(dt)
   end
 
   if gameState == 2 then
-    -- timer = timer - dt
-    -- if timer <= 0 then
-    --   spawnEnemy()
-    --   maxTime = maxTime * 0.98
-    --   timer = maxTime
-    -- end
-
     lootTimer = lootTimer - dt
     if lootTimer <= 0 then
       spawnLoot()
@@ -142,8 +131,6 @@ function love.mousepressed(x, y, b, istouch)
 
   if b == 2 and gameState == 2 then
     launch()
-    -- fade = true
-    -- Timer.tween(3, color, {1,1,1}, 'in-out-linear', function() color = {0,1,1} fade = false end)  
   end
 
   if gameState == 1 then
@@ -186,6 +173,18 @@ function love.keyreleased(key)
     end
   end
 
+  if key == 'l' then
+    lrScan()
+  end
+
+  if key == 'i' and player.scannerData[1] then
+    isolateScanTarget(player.scannerData[1].x, player.scannerData[1].y, 1500)
+  end
+
+  if key == 'space' and player.warpReady == true then
+    warp()
+  end
+
   if key == 'w' or key == 'a' or key == 's' or key == 'd' then
     player.sprite = sprites.shipStatic
   end
@@ -193,9 +192,6 @@ end
 
 function drawWorld()
   love.graphics.setColor(1,1,1)
-  -- if fade == true then
-  --     love.graphics.setColor(color)
-  -- end
 
   gameMap:drawLayer(gameMap.layers['Tile Layer 1'])
   love.graphics.draw(sprites.background, bg_quad, 0, 0) -- add quad variable in second position for tiling

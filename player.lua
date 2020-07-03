@@ -14,10 +14,16 @@ player.linearDamping = 0
 player.thrust = 100
 player.maxSpeed = 600
 player.maxTorque = 10^5
+player.currentSector = math.ceil(player.body:getX()/2000) .. ':' .. math.ceil(player.body:getY()/2000)
 
 player.maxAmmo = 100
 player.ammo = 100
 player.sprite = sprites.shipStatic
+
+player.scannerData = {}
+player.warpTargetX = 0
+player.warpTargetY = 0
+player.warpReady = false
 
 player.body:setMass(500)
 player.body:setLinearDamping(player.linearDamping)
@@ -25,6 +31,7 @@ player.body:setLinearDamping(player.linearDamping)
 
 function updatePlayer(dt)
   if gameState == 2 then
+    player.currentSector = math.ceil(player.body:getX()/2000) .. ':' .. math.ceil(player.body:getY()/2000)
     if player.body:getY() > maph or player.body:getY() < 0 or player.body:getX() < 0 or player.body:getX() > mapw then
       player.body:setLinearDamping(1.5)
     else
@@ -124,7 +131,7 @@ function updatePlayer(dt)
     updateTorque()
 
     local vx, vy = player.body:getLinearVelocity()
-    vx, vy = clamp(vx, vy, player.maxSpeed)
+    -- vx, vy = clamp(vx, vy, player.maxSpeed)
     player.body:setLinearVelocity(vx, vy)
 
     for i,l in ipairs(loots) do
@@ -232,4 +239,46 @@ function updateTorque()
 
   fltAngle = player.body:getAngle() % (2*math.pi)
   player.body:setAngle(fltAngle)
+end
+
+function lrScan()
+  player.scannerData = {}
+  local angle = player.body:getAngle()
+
+  for i,p in ipairs(planets) do
+    -- local r = math.sqrt((p.x - player.body:getX())^2 + (p.y - player.body:getY())^2)
+    local r = 500000
+    local a = math.atan2(player.body:getY() - p.y, player.body:getX() - p.x) + math.pi
+    local s = angle - math.rad(5)
+    local e = angle + math.rad(5)
+    local d = distanceBetween(p.x, p.y, player.body:getX(), player.body:getY())
+
+    if d < r then
+      -- If (starting angle is less than ending angle and the point is within that arc)
+      -- or (starting angle is greater than ending angle (we are encompassing zero in the arc) and the angle of the point is within the starting and ending angle)
+      if (s < e and (s < a and a < e)) or (s > e and (a > s or a < e)) then
+        ping = { x = p.x, y = p.y, data = 'Ping! Body found within scanner range of range: ' .. r .. ' at ' .. math.floor(d) 
+          .. '. Scanner sweep at 10 degrees from ' .. math.floor(math.deg(s)) .. ' to ' 
+          .. math.floor(math.deg(e)) .. ' identified a target vector of ' .. math.floor(math.deg(a))
+          .. '. Target is in sector ' .. math.ceil(p.x/2000) .. ':' .. math.ceil(p.y/2000) .. '. Press I to isolate the signal for warp.'
+        }
+
+        table.insert(player.scannerData, ping)
+      end
+    end
+  end
+end
+
+function isolateScanTarget(x, y, cushion)
+  player.warpTargetX = x + cushion
+  player.warpTargetY = y + cushion
+  player.warpReady = true
+end
+
+function warp()
+  player.body:setX(player.warpTargetX)
+  player.body:setY(player.warpTargetY)
+  player.warpReady = false
+  player.warpTargetX = 0
+  player.warpTargetY = 0
 end

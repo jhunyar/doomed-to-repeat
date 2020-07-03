@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="200" height="200" tilewidth="5000" tileheight="5000" infinite="0" nextlayerid="3" nextobjectid="17">
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="200" height="200" tilewidth="5000" tileheight="5000" infinite="0" nextlayerid="3" nextobjectid="28">
+ <editorsettings>
+  <export target="map-huge.lua" format="lua"/>
+ </editorsettings>
  <layer id="1" name="Tile Layer 1" width="200" height="200">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -251,6 +254,36 @@
    <ellipse/>
   </object>
   <object id="16" x="396672" y="41984" width="1152" height="1152">
+   <ellipse/>
+  </object>
+  <object id="18" x="161344" y="766976" width="2432" height="2432">
+   <ellipse/>
+  </object>
+  <object id="19" x="341760" y="921920" width="1920" height="1920">
+   <ellipse/>
+  </object>
+  <object id="20" x="16320" y="897216" width="2368" height="2368">
+   <ellipse/>
+  </object>
+  <object id="21" x="721088" y="806592" width="2880" height="2880">
+   <ellipse/>
+  </object>
+  <object id="22" x="726272" y="866368" width="1408" height="1408">
+   <ellipse/>
+  </object>
+  <object id="23" x="845952" y="956224" width="2496" height="2496">
+   <ellipse/>
+  </object>
+  <object id="24" x="761088" y="991488" width="1280" height="1280">
+   <ellipse/>
+  </object>
+  <object id="25" x="411136" y="986624" width="1280" height="1280">
+   <ellipse/>
+  </object>
+  <object id="26" x="156672" y="881280" width="2624" height="2624">
+   <ellipse/>
+  </object>
+  <object id="27" x="71744" y="661312" width="1920" height="1920">
    <ellipse/>
   </object>
  </objectgroup>
