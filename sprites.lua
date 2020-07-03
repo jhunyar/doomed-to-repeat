@@ -4,6 +4,10 @@ function setSprites()
     for i = 1, 25, 1 do
       table.insert(sprites.planets, love.graphics.newImage('sprites/planets/mars' .. i .. '.png'))
     end
+  sprites.moons = {}
+    for i = 1, 22, 1 do
+      table.insert(sprites.moons, love.graphics.newImage('sprites/planets/moon' .. i .. '.png'))
+    end
   sprites.player = love.graphics.newImage('sprites/ship-static.png')
   sprites.miniShip = love.graphics.newImage('sprites/miniship.png')
   sprites.shipStatic = love.graphics.newImage('sprites/ship-static.png')

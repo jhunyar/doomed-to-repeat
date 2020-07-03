@@ -64,7 +64,7 @@ function drawPlanets()
     end
 
     if p.moon == 1 then
-      love.graphics.draw(sprites.planets[i], p.moonX, p.moonY, nil, p.moonSize/sprites.planets[i]:getWidth(), p.moonSize/sprites.planets[i]:getHeight(), sprites.planets[i]:getWidth(), sprites.planets[i]:getHeight())
+      love.graphics.draw(sprites.moons[i], p.moonX, p.moonY, nil, p.moonSize/sprites.moons[i]:getWidth(), p.moonSize/sprites.moons[i]:getHeight(), sprites.moons[i]:getWidth(), sprites.moons[i]:getHeight())
     end
   end
 end
