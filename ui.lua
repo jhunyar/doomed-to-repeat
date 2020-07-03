@@ -44,6 +44,17 @@ function drawMinimap()
         love.graphics.circle('fill', love.graphics:getWidth() -300 + p.x/100, love.graphics.getHeight() - 300 + p.y/100, planetSize)
         love.graphics.setColor(1, 1, 1)
       end
+
+      if p.moon == 1 and p.moonDiscovered == true then
+        local moonSize
+        if p.moonSize < 400 then
+          moonSize = 4
+        else
+          moonSize = p.moonSize/100/2
+        end
+
+        love.graphics.circle('fill', love.graphics.getWidth() -300 + p.moonX/100, love.graphics.getHeight() - 300 + p.moonY/100, moonSize) 
+      end
     end
 
     love.graphics.draw(sprites.miniShip, love.graphics:getWidth() -300 + player.body:getX()/100, love.graphics.getHeight() - 300 + player.body:getY()/100, player.body:getAngle(), nil, nil, sprites.miniShip:getWidth()/2, sprites.miniShip:getHeight()/2)

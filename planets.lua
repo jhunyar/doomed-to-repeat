@@ -5,11 +5,19 @@ function spawnPlanet(x, y, size)
   planet.shape = love.physics.newCircleShape(size/2)
   planet.fixture = love.physics.newFixture(planet.body, planet.shape)
 
+  local moonAngle = math.random(math.rad(0-360))
+
   planet.x = x
   planet.y = y
   planet.size = size
   planet.discovered = false
   planet.owner = 'none'
+  planet.orbit = planet.size/2 * math.random(1.3, 1.6)
+  planet.moon = math.random(0, 1)
+  planet.moonSize = 200
+  planet.moonX = planet.x + planet.orbit * math.cos(moonAngle)
+  planet.moonY = planet.y + planet.orbit * math.sin(moonAngle)
+  planet.moonDiscovered = false
 
   -- planet.grid = anim8.newGrid(256, 256, 2560, 2304)
   -- planet.animation = anim8.newAnimation(planet.grid('1-10',1, '1-10',2, '1-10',3, '1-10',4, '1-10',5, '1-10',6, '1-10',7, '1-10',8, '1-10',9), 0.1)
@@ -22,6 +30,10 @@ function updatePlanets()
   for i,p in ipairs(planets) do
     if distanceBetween(p.x, p.y, player.body:getX(), player.body:getY()) < p.size/2 + 1000 then
       p.discovered = true
+    end
+
+    if p.moon == 1 and distanceBetween(p.moonX, p.moonY, player.body:getX(), player.body:getY()) < p.moonSize/2 + 1000 then
+      p.moonDiscovered = true
     end
 
     for j,e in ipairs(enemies) do    -- enemy claims planet
@@ -49,6 +61,10 @@ function drawPlanets()
       love.graphics.setColor(1,0,0)
       love.graphics.rectangle( 'fill', p.x-10, p.y-10, 20, 20 )
       love.graphics.setColor(1,1,1)
+    end
+
+    if p.moon == 1 then
+      love.graphics.draw(sprites.planets[i], p.moonX, p.moonY, nil, p.moonSize/sprites.planets[i]:getWidth(), p.moonSize/sprites.planets[i]:getHeight(), sprites.planets[i]:getWidth(), sprites.planets[i]:getHeight())
     end
   end
 end
