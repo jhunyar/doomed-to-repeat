@@ -16,7 +16,7 @@ function enemy_waypoint_angle(e)
 end
 
 function getAngle(a, b)
-  return math.atan2(b.y - a.y, b.x - a.x)
+  return math.atan2(b.body:getY() - a.y, b.body:getX() - a.x)
 end
 
 function clamp(x, y, d)

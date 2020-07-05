@@ -2,6 +2,7 @@ function love.load(arg)
   love.window.setMode(1920, 1080) -- {borderless=true}
 
   myWorld = love.physics.newWorld(0, 0, false)
+  myWorld:setCallbacks(beginContact, endContact, preSolve, postSolve)
 
   cursor = love.mouse.newCursor("sprites/cursor.png", 0, 0)
   love.mouse.setCursor(cursor)
@@ -15,26 +16,21 @@ function love.load(arg)
   enemies = {}
   bullets = {}
   loots = {}
-  planets = {}
 
   require('sprites')
   setSprites()
-
-  require('ui')
   require('player')
+  require('solarsystem')
+  require('ui')
   require('enemy')
-  require('planets')
+  -- require('planets')
   require('spawn')
   require('helpers')
   require('sound')
   require('slam')
 
-  lootTimer = 10
-
-  color = {0, 1, 1}
-  fade = false
-
   gameState = 1
+  lootTimer = 10
   maxTime = 2
   timer = maxTime
   score = 0
@@ -51,9 +47,15 @@ function love.load(arg)
   cam:lookAt(mapw/2, maph/2)
   bg_quad = love.graphics.newQuad(0, 0, mapw, maph, sprites.background:getWidth(), sprites.background:getHeight())
 
-  for i, obj in pairs(gameMap.layers['planets'].objects) do
-    spawnPlanet(obj.x, obj.y, obj.width) -- x, y, size
-  end
+  spawnSolarSystem(mapw/2, maph/2, 10000)
+  -- for i, obj in pairs(gameMap.layers['planets'].objects) do
+  --   spawnPlanet(obj.x, obj.y, obj.width) -- x, y, size
+  -- end
+-- spawn player at
+  local angle = math.rad(love.math.random(0, 360))
+  local playerX = star.body:getX() + star.size * math.cos(angle)
+  local playerY = star.body:getY() + star.size * math.sin(angle)
+  spawnPlayer(playerX, playerY)
 
   for i = 1, 100, 2 do
     spawnEnemy()
@@ -71,14 +73,16 @@ function love.update(dt)
   updatePlayer(dt)
   updateBullets(dt)
   updateEnemies(dt)
-  updatePlanets()
+  updatePlanets(dt)
 
   cam:lookAt(player.body:getX(), player.body:getY())
   -- cam:lockPosition(player.body:getX(), player.body:getY(), cam.smooth.linear(500))
 
-  for i,p in ipairs(planets) do
-    if distanceBetween(p.x, p.y, player.body:getX(), player.body:getY()) < p.size/2+50 then
-      p.owner = 'player'
+  for i,o in ipairs(star.orbits) do
+    if o.planet then
+      if distanceBetween(o.planet.body:getX(), o.planet.body:getY(), player.body:getX(), player.body:getY()) < o.planet.size/2+50 then
+        o.planet.owner = 'player'
+      end
     end
   end
 
@@ -178,7 +182,7 @@ function love.keyreleased(key)
   end
 
   if key == 'i' and player.scannerData[1] then
-    isolateScanTarget(player.scannerData[1].x, player.scannerData[1].y, 1500)
+    isolateScanTarget(player.scannerData[1].x, player.scannerData[1].y, 5000)
   end
 
   if key == 'space' and player.warpReady == true then
@@ -204,4 +208,12 @@ function drawWorld()
   drawPlayer()
   drawEnemies()
   drawBullets()
+end
+
+function beginContact(a, b, coll)
+  player.landed = true
+end
+
+function endContact(a, b, coll)
+  player.landed = false
 end

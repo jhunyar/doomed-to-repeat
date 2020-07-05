@@ -13,31 +13,31 @@ function spawnEnemy()
   enemy.arrived = false
   enemy.health = 3
 
-  -- local side = math.random(1, 4)
+  -- local side = love.math.random(1, 4)
 
-  enemy.x = math.random(0, mapw)
-  enemy.y = math.random(0, maph)
-  enemy.sx = math.random(0, mapw)
-  enemy.sy = math.random(0, maph)
+  enemy.x = love.math.random(0, mapw)
+  enemy.y = love.math.random(0, maph)
+  enemy.sx = love.math.random(0, mapw)
+  enemy.sy = love.math.random(0, maph)
 
   -- if side == 1 then
   --   enemy.x = -30
   --   enemy.sx = -30
-  --   enemy.y = math.random(0, maph)
-  --   enemy.sy = math.random(0, maph)
+  --   enemy.y = love.math.random(0, maph)
+  --   enemy.sy = love.math.random(0, maph)
   -- elseif side == 2 then
-  --   enemy.x = math.random(0, mapw)
-  --   enemy.sx = math.random(0, mapw)
+  --   enemy.x = love.math.random(0, mapw)
+  --   enemy.sx = love.math.random(0, mapw)
   --   enemy.y = -30
   --   enemy.sy = -30
   -- elseif side == 3 then
   --   enemy.x = mapw + 30
   --   enemy.sx = mapw + 30
-  --   enemy.y = math.random(0, maph)
-  --   enemy.sy = math.random(0, maph)
+  --   enemy.y = love.math.random(0, maph)
+  --   enemy.sy = love.math.random(0, maph)
   -- else
-  --   enemy.x = math.random(0, mapw)
-  --   enemy.sx = math.random(0, mapw)
+  --   enemy.x = love.math.random(0, mapw)
+  --   enemy.sx = love.math.random(0, mapw)
   --   enemy.y = maph + 30
   --   enemy.sy = maph + 30
   -- end
@@ -60,10 +60,12 @@ function updateEnemies(dt)
     planetInRange = false
     targetPlanet = {}
     --
-    for j,p in ipairs(planets) do
-      if distanceBetween(e.x, e.y, p.x + p.size/2, p.y + p.size/2) < 500 then
-        planetInRange = true
-        targetPlanet = p
+    for j,o in ipairs(star.orbits) do
+      if o.planet then
+        if distanceBetween(e.x, e.y, o.planet.body:getX() + o.planet.size/2, o.planet.body:getY() + o.planet.size/2) < 500 then
+          planetInRange = true
+          targetPlanet = o.planet
+        end
       end
     end
 
@@ -83,9 +85,11 @@ function updateEnemies(dt)
     end
 
     if distanceBetween(e.x, e.y, player.body:getX(), player.body:getY()) < 30 then
-      for i,p in ipairs(planets) do
-        p.owner = 'none'
-        p.discovered = false
+      for i,o in ipairs(star.orbits) do
+        if o.planet then
+          p.owner = 'none'
+          p.discovered = false
+        end
       end
       enemies = {}
       loots = {}
@@ -93,7 +97,7 @@ function updateEnemies(dt)
       gameState = 1
       music:stop()
       ending:play()
-      player.body:setPosition(mapw/2, maph/2)
+      player.body:setPosition(mapw/2+7000, maph/2+7000) -- TODO make this random angle from sun
       cam:lookAt(mapw/2, maph/2)
     end
   end
@@ -131,16 +135,7 @@ function drawEnemies()
 end
 
 function genWaypoint()
-  wx = math.random(0,mapw)
-  wy = math.random(0,maph)
+  wx = love.math.random(0,mapw)
+  wy = love.math.random(0,maph)
   return wx, wy
 end
-
-function planetInRange(e)
-  for i,p in ipairs(planets) do
-    if p.owner == 'player' or p.owner == 'none' and distanceBetween(e.x, e.y, p.x + p.size/2, p.y + p.size/2) < 500 then
-      
-    end
-  end
-end
-

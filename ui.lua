@@ -1,7 +1,7 @@
 function drawHud()
   love.graphics.setFont(fontLarge)
   if gameState == 1 then
-    love.graphics.print('Click anywhere to begin!', camX + 200, camY)
+    love.graphics.print('Click LMB to begin', camX/2, camY/2)
   end
 
   if showHUD == true then
@@ -32,23 +32,30 @@ function drawMinimap()
     love.graphics.setColor(0.42,0.11,0.27,0.2)
     love.graphics.rectangle('fill', love.graphics:getWidth() -510, love.graphics:getHeight() - 510, mapw/2000, maph/2000)
     love.graphics.setColor(1,1,1)
-    for i,p in ipairs(planets) do
-      if p.discovered == true then
-        if p.owner == 'player' then
-          love.graphics.setColor(0, 0.2, 1)
-        elseif p.owner == 'enemy' then
-          love.graphics.setColor(1, 0, 0)
+    for i,o in ipairs(star.orbits) do
+      if o.planet then
+        if o.planet.discovered == false or o.planet.discovered == true then
+          love.graphics.setColor(1, 1, 1, 0.2)
+          love.graphics.circle('line', love.graphics:getWidth() -510 + star.body:getX()/2000, love.graphics.getHeight() - 510 + star.body:getY()/2000, o.radius/2000)
+          love.graphics.setColor(1, 1, 1)
+          if o.planet.owner == 'player' then
+            love.graphics.setColor(0, 0.2, 1)
+          elseif o.planet.owner == 'enemy' then
+            love.graphics.setColor(1, 0, 0)
+          end
+
+          love.graphics.circle('fill', love.graphics:getWidth() -510 + o.planet.body:getX()/2000, love.graphics.getHeight() - 510 + o.planet.body:getY()/2000, 4)
+          love.graphics.setColor(1, 1, 1)
         end
 
-        love.graphics.circle('fill', love.graphics:getWidth() -510 + p.x/2000, love.graphics.getHeight() - 510 + p.y/2000, 4)
-        love.graphics.setColor(1, 1, 1)
-      end
-
-      if p.moon == 1 and p.moonDiscovered == true then
-        love.graphics.circle('fill', love.graphics.getWidth() -510 + p.moonX/2000, love.graphics.getHeight() - 510 + p.moonY/2000, 2) 
+        -- for j,m in ipairs(p.moons) do
+        --   if m.discovered == true then
+        --     love.graphics.circle('fill', love.graphics.getWidth() -510 + m.body:getX()/2000, love.graphics.getHeight() - 510 + m.body:getY()/2000, 2) 
+        --   end
+        -- end
       end
     end
 
-    love.graphics.draw(sprites.miniShip, love.graphics:getWidth() -510 + player.body:getX()/2000, love.graphics.getHeight() - 510 + player.body:getY()/2000, player.body:getAngle(), nil, nil, sprites.miniShip:getWidth()/4, sprites.miniShip:getHeight()/4)
+    love.graphics.draw(sprites.miniShip, love.graphics:getWidth() -510 + player.body:getX()/2000, love.graphics.getHeight() - 510 + player.body:getY()/2000, player.body:getAngle(), nil, nil, sprites.miniShip:getWidth()/2, sprites.miniShip:getHeight()/2)
   end
 end
