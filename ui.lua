@@ -63,11 +63,15 @@ function drawMinimap(zoom)
           love.graphics.setColor(1, 1, 1)
         end
 
-        -- for j,m in ipairs(p.moons) do
-        --   if m.discovered == true then
-        --     love.graphics.circle('fill', love.graphics.getWidth() -510 + m.body:getX()/scalingFactor, love.graphics.getHeight() - 510 + m.body:getY()/scalingFactor, 2) 
-        --   end
-        -- end
+        for j,m in ipairs(o.planet.orbits) do
+          if m.moon then
+            love.graphics.setColor(1, 1, 1, 0.2)
+            love.graphics.circle('line', sX + o.planet.body:getX()/scalingFactor, sY + o.planet.body:getY()/scalingFactor, m.radius/scalingFactor)
+            love.graphics.setColor(1, 0, 0)
+            love.graphics.circle('fill', sX + m.moon.body:getX()/scalingFactor, sY + m.moon.body:getY()/scalingFactor, 2)
+            love.graphics.setColor(1, 1, 1) 
+          end
+        end
       end
     end
 

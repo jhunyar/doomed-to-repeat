@@ -176,6 +176,11 @@ function launch()
       player.joint:destroy()
     end
   end
+  if player.moonJoint then
+    if not player.moonJoint:isDestroyed() then
+      player.moonJoint:destroy()
+    end
+  end
   mx,my = cam:mousePosition()
   bx,by = player.body:getPosition()
   dx, dy = mx - bx, my - by
@@ -199,7 +204,7 @@ function spawnBullet()
   bullet.x = player.body:getX()
   bullet.y = player.body:getY()
   bullet.speed = 1000
-  bullet.direction = player_mouse_angle()
+  bullet.direction = player.body:getAngle()
   bullet.dead = false
 
   table.insert(bullets, bullet)
