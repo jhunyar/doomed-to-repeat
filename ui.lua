@@ -27,16 +27,31 @@ function drawHud()
   end
 end
 
-function drawMinimap()
+function drawMinimap(zoom)
   if showMap == true then
-    love.graphics.setColor(0.42,0.11,0.27,0.2)
-    love.graphics.rectangle('fill', love.graphics:getWidth() -510, love.graphics:getHeight() - 510, mapw/2000, maph/2000)
+    love.graphics.setColor(0.42,0.11,0.27,0.15)
+    local sX = love.graphics:getWidth() - 510
+    local sY = love.graphics:getHeight() - 510
+    
+    local scalingFactor = 2000
+
+    if zoom == 2 then
+      scalingFactor = 1174
+      sX = 10
+      sY = 10
+    end
+
+    love.graphics.rectangle('fill', sX, sY, mapw/scalingFactor, maph/scalingFactor)
     love.graphics.setColor(1,1,1)
-    for i,o in ipairs(star.orbits) do
+
+    love.graphics.setColor(1, 1, 0)
+    love.graphics.circle('fill', sX + star.body:getX()/scalingFactor, sY + star.body:getY()/scalingFactor, star.size/scalingFactor)
+    love.graphics.setColor(1, 1, 1)
+    for i,o in ipairs(star.orbits) do      
       if o.planet then
         if o.planet.discovered == false or o.planet.discovered == true then
           love.graphics.setColor(1, 1, 1, 0.2)
-          love.graphics.circle('line', love.graphics:getWidth() -510 + star.body:getX()/2000, love.graphics.getHeight() - 510 + star.body:getY()/2000, o.radius/2000)
+          love.graphics.circle('line', sX + star.body:getX()/scalingFactor, sY + star.body:getY()/scalingFactor, o.radius/scalingFactor)
           love.graphics.setColor(1, 1, 1)
           if o.planet.owner == 'player' then
             love.graphics.setColor(0, 0.2, 1)
@@ -44,18 +59,38 @@ function drawMinimap()
             love.graphics.setColor(1, 0, 0)
           end
 
-          love.graphics.circle('fill', love.graphics:getWidth() -510 + o.planet.body:getX()/2000, love.graphics.getHeight() - 510 + o.planet.body:getY()/2000, 4)
+          love.graphics.circle('fill', sX + o.planet.body:getX()/scalingFactor, sY + o.planet.body:getY()/scalingFactor, 4)
           love.graphics.setColor(1, 1, 1)
         end
 
         -- for j,m in ipairs(p.moons) do
         --   if m.discovered == true then
-        --     love.graphics.circle('fill', love.graphics.getWidth() -510 + m.body:getX()/2000, love.graphics.getHeight() - 510 + m.body:getY()/2000, 2) 
+        --     love.graphics.circle('fill', love.graphics.getWidth() -510 + m.body:getX()/scalingFactor, love.graphics.getHeight() - 510 + m.body:getY()/scalingFactor, 2) 
         --   end
         -- end
       end
     end
 
-    love.graphics.draw(sprites.miniShip, love.graphics:getWidth() -510 + player.body:getX()/2000, love.graphics.getHeight() - 510 + player.body:getY()/2000, player.body:getAngle(), nil, nil, sprites.miniShip:getWidth()/2, sprites.miniShip:getHeight()/2)
+    love.graphics.draw(sprites.miniShip, sX + player.body:getX()/scalingFactor, sY + player.body:getY()/scalingFactor, player.body:getAngle(), nil, nil, sprites.miniShip:getWidth()/2, sprites.miniShip:getHeight()/2)
+  end
+end
+
+function drawConsole()
+  if showConsole == true then
+    local cX = 10
+    local cY = love.graphics:getHeight() - 210
+    local cW = love.graphics:getWidth() - 530
+    local cH = 200
+    
+    love.graphics.setColor(0.42,0.11,0.27,0.15)
+    love.graphics.rectangle('fill', cX, cY, cW, cH)
+    love.graphics.setColor(1,1,1)
+
+    love.graphics.setColor(0, 0, 0, 0.8)
+    love.graphics.rectangle('fill', cX + 10, cY + 10, 100, 30)
+    love.graphics.setColor(1, 1, 1)
+    if player.scannerData[1] then
+      love.graphics.printf(player.scannerData[1].sector, cX + 12, cY + 12, 100, 'center')
+    end
   end
 end

@@ -24,7 +24,7 @@ function spawnSolarSystem(x, y, size)
 
     if orbit.hasPlanet == 1 then
       orbit.planet = {}
-      orbit.planet.size = love.math.random(2500, 5000)
+      orbit.planet.size = love.math.random(1000, 2000)
       orbit.planet.angle = math.rad(love.math.random(0, 360))
       orbit.planet.discovered = false
       orbit.planet.owner = 'none'
@@ -66,7 +66,7 @@ function updatePlanets(dt)
       end
       
 
-      if player.landed == true and distanceBetween(o.planet.body:getX(), o.planet.body:getY(), player.body:getX(), player.body:getY()) < o.planet.size/2 + 100 then
+      if player.landed == true and distanceBetween(o.planet.body:getX(), o.planet.body:getY(), player.body:getX(), player.body:getY()) < o.planet.size/2 + 50 then
         player.joint = love.physics.newWeldJoint(
           player.body, o.planet.body,
           player.body:getX(), player.body:getY()
@@ -98,15 +98,16 @@ function drawPlanets()
     if o.planet then
       love.graphics.draw(sprites.planetLg, o.planet.body:getX(), o.planet.body:getY(), nil, o.planet.size/sprites.planetLg:getWidth(), o.planet.size/sprites.planetLg:getWidth(), sprites.planetLg:getWidth()/2, sprites.planetLg:getHeight()/2)
 
+      love.graphics.setLineWidth(2)
       if o.planet.owner == 'player' then
         love.graphics.setColor(0,0.2,1)
-        love.graphics.rectangle( 'fill', o.planet.body:getX()-100, o.planet.body:getY()-100, 200, 200 )
-        love.graphics.setColor(1,1,1)
       elseif o.planet.owner == 'enemy' then
-        love.graphics.setColor(1,0,0)
-        love.graphics.rectangle( 'fill', o.planet.body:getX()-100, o.planet.body:getY()-100, 200, 200 )
-        love.graphics.setColor(1,1,1)
+        love.graphics.setColor(1,0.2,0)
       end
+
+      love.graphics.circle('line', o.planet.body:getX(), o.planet.body:getY(), o.planet.size/2)
+      love.graphics.setColor(1,1,1)
+      love.graphics.setLineWidth(1)
     end
   end
 end

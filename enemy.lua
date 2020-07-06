@@ -95,10 +95,9 @@ function updateEnemies(dt)
       loots = {}
       bullets = {}
       gameState = 1
-      music:stop()
-      ending:play()
-      player.body:setPosition(mapw/2+7000, maph/2+7000) -- TODO make this random angle from sun
-      cam:lookAt(mapw/2, maph/2)
+      explosionLong:play()
+      player.body:setPosition(star.body:getX() + star.size * math.cos(angle), star.body:getY() + star.size * math.sin(angle))
+      -- cam:lookAt(player.body:getX(), player.body:getY())
     end
   end
 

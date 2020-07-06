@@ -36,6 +36,8 @@ function love.load(arg)
   score = 0
   showHUD = true
   showMap = true
+  mapZoom = 1
+  showConsole = true
 
   fontLarge = love.graphics.newFont(40)
   fontSmall = love.graphics.newFont(20)
@@ -60,9 +62,6 @@ function love.load(arg)
   for i = 1, 100, 2 do
     spawnEnemy()
   end
-
-  ending:stop()
-  music:play()
 end
 
 function love.update(dt)
@@ -125,7 +124,8 @@ function love.draw()
   camX,camY = cam:cameraCoords(player.body:getX(), player.body:getY())
 
   drawHud()
-  drawMinimap()
+  drawMinimap(mapZoom)
+  drawConsole()
 end
 
 function love.mousepressed(x, y, b, istouch)
@@ -164,6 +164,14 @@ function love.keyreleased(key)
       showMap = false
     else
       showMap = true
+    end
+  end
+
+  if key == 'n' then
+    if mapZoom == 1 then
+      mapZoom = 2
+    else
+      mapZoom =1
     end
   end
 

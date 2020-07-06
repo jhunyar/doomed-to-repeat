@@ -17,7 +17,7 @@ function spawnPlayer(x, y)
   player.thrust = 100
   player.maxSpeed = 600
   player.maxTorque = 10^5
-  player.currentSector = math.ceil(player.body:getX()/2000) .. ':' .. math.ceil(player.body:getY()/2000)
+  player.currentSector = math.ceil(player.body:getX()/2000 - 250) .. ':' .. math.ceil(player.body:getY()/2000 - 250)
   
   player.maxAmmo = 100
   player.ammo = 100
@@ -35,7 +35,7 @@ end
 
 function updatePlayer(dt)
   if gameState == 2 then
-    player.currentSector = math.ceil(player.body:getX()/2000) .. ':' .. math.ceil(player.body:getY()/2000)
+    player.currentSector = math.ceil(player.body:getX()/2000 - 250) .. ':' .. math.ceil(player.body:getY()/2000 - 250)
     if player.body:getY() > maph or player.body:getY() < 0 or player.body:getX() < 0 or player.body:getX() > mapw then
       player.body:setLinearDamping(1.5)
     else
@@ -50,10 +50,11 @@ function updatePlayer(dt)
 
     if love.keyboard.isDown('s') and player.body:getY() < maph then -- and player.body:getY() < love.graphics.getHeight()
       player.body:applyForce(0, player.thrust*1000)
+      -- playSound(sndThrustHold) -- TODO this plays constantly instead of once...
       if player.body:getAngle() > 3.93 and player.body:getAngle() < 5.5 then
-        if av < -0.5 then player.sprite = sprites.shipFrontRotL
-        elseif av > 0.5 then player.sprite = sprites.shipFrontRotR
-        else player.sprite = sprites.shipFront end
+        if av < -0.5 then s = sprites.shipFrontRotL
+        elseif av > 0.5 then s = sprites.shipFrontRotR
+        else s = sprites.shipFront end
       elseif player.body:getAngle() < 3.93 and player.body:getAngle() > 2.36 then
         if av < -0.5 then player.sprite = sprites.shipRightRotL
         elseif av > 0.5 then player.sprite = sprites.shipRightRotR
@@ -71,6 +72,7 @@ function updatePlayer(dt)
 
     if love.keyboard.isDown('w') and player.body:getY() > 0 then -- and player.body:getY() > 0
       player.body:applyForce(0, -player.thrust*1000)
+      -- playSound(sndThrustHold)
       if player.body:getAngle() > 3.93 and player.body:getAngle() < 5.5 then
         if av < -0.5 then player.sprite = sprites.shipRearRotL
         elseif av > 0.5 then player.sprite = sprites.shipRearRotR
@@ -92,6 +94,7 @@ function updatePlayer(dt)
 
     if love.keyboard.isDown('a') and player.body:getX() > 0 then -- and player.body:getX() > 0
       player.body:applyForce(-player.thrust*1000, 0)
+      -- playSound(sndThrustHold)
       if player.body:getAngle() > 3.93 and player.body:getAngle() < 5.5 then
         if av < -0.5 then player.sprite = sprites.shipRightRotL
         elseif av > 0.5 then player.sprite = sprites.shipRightRotR
@@ -113,6 +116,7 @@ function updatePlayer(dt)
 
     if love.keyboard.isDown('d') and player.body:getX() < mapw then -- and player.body:getX() < love.graphics.getWidth()
       player.body:applyForce(player.thrust*1000, 0)
+      -- playSound(sndThrustHold)
       if player.body:getAngle() > 3.93 and player.body:getAngle() < 5.5 then
         if av < -0.5 then player.sprite = sprites.shipLeftRotL
         elseif av > 0.5 then player.sprite = sprites.shipLeftRotR
@@ -157,11 +161,15 @@ function updatePlayer(dt)
 end
 
 function drawPlayer()
+  if distanceBetween(player.body:getX(), player.body:getY(), star.body:getX(), star.body:getY()) < star.size then
+    love.graphics.setColor(1, 1, 0)
+  end
   love.graphics.draw(player.sprite, player.body:getX(), player.body:getY(), player.body:getAngle(), 1, 1, sprites.player:getWidth()/2, sprites.player:getHeight()/2)
+  love.graphics.setColor(1, 1, 1)
 end
 
 function launch()
-  sndLaunch:play()
+  playSound(sndLaunch)
   player.landed = false
   if player.joint then
     if not player.joint:isDestroyed() then
@@ -182,7 +190,9 @@ function launch()
 end
 
 function spawnBullet()
-  local instance = sndShoot:play()
+  -- sndShoot:stop()
+  -- sndShoot:play()
+  playSound(sndShoot)
 
   bullet = {}
 
@@ -270,12 +280,16 @@ function lrScan()
         -- If (starting angle is less than ending angle and the point is within that arc)
         -- or (starting angle is greater than ending angle (we are encompassing zero in the arc) and the angle of the point is within the starting and ending angle)
         if (s < e and (s < a and a < e)) or (s > e and (a > s or a < e)) then
-          ping = { x = o.planet.body:getX(), y = o.planet.body:getY(), data = 'Ping! Body found within scanner range of range: ' .. r .. ' at ' .. math.floor(d) 
+          ping = { 
+            x = o.planet.body:getX(),
+            y = o.planet.body:getY(),
+            sector = math.floor(o.planet.body:getX()/2000 - 250) .. ':' .. math.floor(o.planet.body:getY()/2000 - 250),
+            data = 'Ping! Body found within scanner range of range: ' .. r .. ' at ' .. math.floor(d) 
             .. '. Scanner sweep at 10 degrees from ' .. math.floor(math.deg(s)) .. ' to ' 
             .. math.floor(math.deg(e)) .. ' identified a target vector of ' .. math.floor(math.deg(a))
-            .. '. Target is in sector ' .. math.ceil(o.planet.body:getX()/2000) .. ':' .. math.ceil(o.planet.body:getY()/2000) .. '. Press I to isolate the signal for warp.'
+            .. '. Target is in sector ' .. math.floor(o.planet.body:getX()/2000 - 250) .. ':' .. math.floor(o.planet.body:getY()/2000 - 250) .. '. Press I to isolate the signal for warp.'
           }
-
+          
           table.insert(player.scannerData, ping)
         end
       end
@@ -295,4 +309,5 @@ function warp()
   player.warpReady = false
   player.warpTargetX = 0
   player.warpTargetY = 0
+  player.scannerData = {}
 end
