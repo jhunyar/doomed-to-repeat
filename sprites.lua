@@ -1,4 +1,4 @@
-function setSprites()
+function loadSprites()
   sprites = {}
   sprites.planets = {}  
     for i = 1, 25, 1 do

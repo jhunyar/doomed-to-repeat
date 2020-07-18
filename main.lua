@@ -18,7 +18,7 @@ function love.load(arg)
   loots = {}
 
   require('sprites')
-  setSprites()
+  loadSprites()
   require('player')
   require('solarsystem')
   require('ui')
@@ -171,6 +171,14 @@ function love.keyreleased(key)
       showMap = false
     else
       showMap = true
+    end
+  end
+
+  if key == 'c' then
+    if showConsole then
+      showConsole = false
+    else
+      showConsole = true
     end
   end
 

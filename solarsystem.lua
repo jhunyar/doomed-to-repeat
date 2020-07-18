@@ -12,14 +12,15 @@ function spawnSolarSystem(x, y, size)
   -- create orbits for this star
   local minOrbitRadius = star.size/2 + 50000 -- not too close to the star as it will eventually kill the player
   local maxOrbitRadius = mapw/2 - star.size/2 - 20000 -- assuming the star is always at the center of the map here
+  local minOrbits = 5
   local maxOrbits = 20
-  local orbitSeparation = (maxOrbitRadius - minOrbitRadius) / maxOrbits -- assuming 420000/20 = 21,000
+  local totalOrbits = love.math.random(minOrbits, maxOrbits)
+  local orbitSeparation = (maxOrbitRadius - minOrbitRadius) / totalOrbits
   
   for i=minOrbitRadius, maxOrbitRadius, orbitSeparation do
     orbit = {}
-    orbit.radius = i
-    orbit.speed = love.math.random(50, 100)
-    orbit.hasPlanet = love.math.random(0, 1)
+    orbit.radius = math.random(i-10000, i + 10000)
+    -- orbit.speed = love.math.random(50, 100)
 
     spawnPlanet(orbit)
     table.insert(star.orbits, orbit)
@@ -27,38 +28,35 @@ function spawnSolarSystem(x, y, size)
 end
 
 function spawnPlanet(orbit)
-  if orbit.hasPlanet == 1 then
-    orbit.planet = {}
-    local p = orbit.planet
-    p.orbits = {}
-    p.size = love.math.random(1000, 2000)
-    p.angle = math.rad(love.math.random(0, 360))
-    p.discovered = false
-    p.owner = 'none'
+  orbit.planet = {}
+  local p = orbit.planet
+  p.orbits = {}
+  p.size = love.math.random(1000, 2000)
+  p.angle = math.rad(love.math.random(0, 360))
+  p.discovered = false
+  p.owner = 'none'
 
-    local pX = star.body:getX() + orbit.radius * math.cos(p.angle)
-    local pY = star.body:getY() + orbit.radius * math.sin(p.angle)
+  local pX = star.body:getX() + orbit.radius * math.cos(p.angle)
+  local pY = star.body:getY() + orbit.radius * math.sin(p.angle)
 
-    p.body = love.physics.newBody(myWorld, pX, pY, 'static')
-    p.shape = love.physics.newCircleShape(p.size/2)
-    p.fixture = love.physics.newFixture(p.body, p.shape)
-    
-    -- create orbits for this planet
-    local minOrbitRadius = p.size/2 + 3000
-    local maxOrbitRadius = p.size/2 + 6000
-    local maxOrbits = 3
-    local orbitSeparation = (maxOrbitRadius - minOrbitRadius) / maxOrbits -- assuming 420000/20 = 21,000
-
-    for i=minOrbitRadius, maxOrbitRadius, orbitSeparation do
-      orbit = {}
+  p.body = love.physics.newBody(myWorld, pX, pY, 'static')
+  p.shape = love.physics.newCircleShape(p.size/2)
+  p.fixture = love.physics.newFixture(p.body, p.shape)
   
-      orbit.radius = i
-      orbit.speed = love.math.random(50, 100)
-      orbit.hasMoon = love.math.random(0, 1)
-  
-      spawnMoon(p, orbit)
-      table.insert(p.orbits, orbit)
-    end
+  -- create orbits for this planet
+  local minOrbitRadius = p.size/2 + 3000
+  local maxOrbitRadius = p.size/2 + 6000
+  local maxOrbits = 3
+  local orbitSeparation = (maxOrbitRadius - minOrbitRadius) / maxOrbits -- assuming 420000/20 = 21,000
+
+  for i=minOrbitRadius, maxOrbitRadius, orbitSeparation do
+    orbit = {}
+
+    orbit.radius = i
+    orbit.hasMoon = love.math.random(0, 1)
+
+    spawnMoon(p, orbit)
+    table.insert(p.orbits, orbit)
   end
 end
 
@@ -162,6 +160,11 @@ function drawPlanets()
 
   for i,o in ipairs(star.orbits) do  
     if o.planet then
+      if o.planet.discovered == true then
+        love.graphics.setColor(1,1,1,0.3)
+        love.graphics.circle('line', star.body:getX(), star.body:getY(), distanceBetween(star.body:getX(), star.body:getY(), o.planet.body:getX(), o.planet.body:getY()))
+        love.graphics.setColor(1,1,1)
+      end
       love.graphics.draw(sprites.planetLg, o.planet.body:getX(), o.planet.body:getY(), nil, o.planet.size/sprites.planetLg:getWidth(), o.planet.size/sprites.planetLg:getWidth(), sprites.planetLg:getWidth()/2, sprites.planetLg:getHeight()/2)
 
       love.graphics.setLineWidth(2)
@@ -183,6 +186,12 @@ end
 function drawMoons(planet)
   for i,o in ipairs(planet.orbits) do  
     if o.moon then
+      if planet.discovered == true or o.moon.discovered == true then
+        love.graphics.setColor(1,1,1,0.3)
+        love.graphics.circle('line', planet.body:getX(), planet.body:getY(), distanceBetween(planet.body:getX(), planet.body:getY(), o.moon.body:getX(), o.moon.body:getY()))
+        love.graphics.setColor(1,1,1)
+      end
+      
       love.graphics.draw(sprites.moons[1], o.moon.body:getX(), o.moon.body:getY(), nil, o.moon.size/sprites.moons[1]:getWidth(), o.moon.size/sprites.moons[1]:getWidth(), sprites.moons[1]:getWidth()/2, sprites.moons[1]:getHeight()/2)
 
       love.graphics.setLineWidth(2)
