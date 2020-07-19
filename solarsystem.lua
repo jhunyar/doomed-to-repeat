@@ -200,16 +200,48 @@ function drawPlanets()
       love.graphics.setLineWidth(1)
 
       if distanceBetween(o.planet.body:getX(), o.planet.body:getY(), player.body:getX(), player.body:getY()) < o.planet.size/2 + 1000 then
+        local angle = planet_player_angle(o.planet) % (2*math.pi)
+        local textOffsetX = 0
+        local textOffsetY = 0
+        local lineOffsetX = 0
+        local lineOffsetY = 0
+
+        if angle > 4.18879 and angle < 5.23599 then
+          --player is above the planet, draw text below
+          textOffsetX = -150
+          textOffsetY = 150
+          lineOffsetX = 0
+          lineOffsetY = 210
+        elseif angle > 2.0944 and angle < 4.18879 then
+          -- player is left of planet, draw line from right
+          textOffsetX = -150
+          textOffsetY = -150
+          lineOffsetX = 100
+          lineOffsetY = -120
+        elseif angle > 1.0472 and angle < 2.0944 then
+          --player is below the planet, draw line from above
+          textOffsetX = -150
+          textOffsetY = -150
+          lineOffsetX = 0
+          lineOffsetY = -160
+        else
+          --player is to the right of the planet, draw line from left
+          textOffsetX = -150
+          textOffsetY = -150
+          lineOffsetX = -100
+          lineOffsetY = -120
+        end
+        
         love.graphics.setFont(fontMd)
         love.graphics.printf(
           'Resources: ' .. math.floor(o.planet.res) .. '\n Harvested: ' .. math.floor(o.planet.harvestedRes),
-          player.body:getX() - 150,
-          player.body:getY() - 200,
+          player.body:getX() + textOffsetX,
+          player.body:getY() + textOffsetY,
           300,
           'center'
         )
 
-        love.graphics.line(o.planet.body:getX(), o.planet.body:getY(), player.body:getX() - 100, player.body:getY() - 180)
+        love.graphics.line(o.planet.body:getX(), o.planet.body:getY(), player.body:getX() + lineOffsetX, player.body:getY() + lineOffsetY)
       end
 
       drawMoons(o.planet)
