@@ -134,9 +134,9 @@ function updatePlayer(dt)
 
     updateTorque()
 
-    local vx, vy = player.body:getLinearVelocity()
-    -- vx, vy = clamp(vx, vy, player.maxSpeed)
-    player.body:setLinearVelocity(vx, vy)
+    -- local vx, vy = player.body:getLinearVelocity()
+    -- -- vx, vy = clamp(vx, vy, player.maxSpeed)
+    -- player.body:setLinearVelocity(vx, vy)
 
     for i,l in ipairs(loots) do
       if distanceBetween(l.x, l.y, player.body:getX(), player.body:getY()) < 30 then

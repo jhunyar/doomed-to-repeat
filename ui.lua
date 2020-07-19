@@ -17,7 +17,7 @@ function drawHud()
     love.graphics.print('Sector: ' .. player.currentSector, camX - 100, camY - 80)
     love.graphics.print('Ammo: ' .. player.ammo, camX + 60, camY - 80)
     love.graphics.print('L.Damp: ' .. player.linearDampingStatus, camX + 60, camY + 80)
-    vx, vy = player.body:getLinearVelocity()
+    local vx, vy = player.body:getLinearVelocity()
     if vx < 0 then vx = vx * -1 end
     if vy < 0 then vy = vy * -1 end
     love.graphics.print('Velocity: ' .. math.floor(vx+vy), camX + -100, camY + 80)

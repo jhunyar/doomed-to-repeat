@@ -29,7 +29,6 @@ function love.load(arg)
   require('spawn')
   require('helpers')
   require('sound')
-  require('slam')
 
   gameState = 1
   lootTimer = 10
@@ -48,7 +47,6 @@ function love.load(arg)
   gameMap = sti('maps/map-huge.lua')
   mapw = gameMap.width * gameMap.tilewidth
   maph = gameMap.height * gameMap.tileheight
-  cam:lookAt(mapw/2, maph/2)
   bg_quad = love.graphics.newQuad(0, 0, mapw, maph, sprites.background:getWidth(), sprites.background:getHeight())
 
   spawnSolarSystem(mapw/2, maph/2, 10000)
@@ -57,8 +55,9 @@ function love.load(arg)
   local playerX = star.body:getX() + star.size * math.cos(angle)
   local playerY = star.body:getY() + star.size * math.sin(angle)
   spawnPlayer(playerX, playerY)
+  cam:lookAt(player.body:getX(), player.body:getY())
 
-  for i = 1, 500, 2 do
+  for i = 1, 100, 2 do
     spawnEnemy()
   end
 end
@@ -73,8 +72,14 @@ function love.update(dt)
   updateEnemies(dt)
   updatePlanets(dt)
 
-  cam:lookAt(player.body:getX(), player.body:getY())
-  -- cam:lockPosition(player.body:getX(), player.body:getY(), cam.smooth.linear(500))
+  -- look at 200 x and 200 y in relation to the player angle
+
+  -- find out what direction the player is facing (player.body:getAngle())
+  local cx = player.body:getX() + math.cos(player.body:getAngle()) * 200
+  local cy = player.body:getY() + math.sin(player.body:getAngle()) * 200
+
+  cam:lookAt(cx, cy)
+  -- cam:lockPosition(player.body:getX(), player.body:getY(), cam.smooth.linear())
 
   for i=#bullets, 1, -1 do
     local b = bullets[i]
