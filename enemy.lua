@@ -8,7 +8,7 @@ function spawnEnemy()
   enemy.wx = 0
   enemy.wy = 0
   enemy.angle = 0
-  enemy.speed = 140
+  enemy.speed = 1000
   enemy.dead = false
   enemy.arrived = false
   enemy.health = 3
@@ -62,7 +62,7 @@ function updateEnemies(dt)
     --
     for j,o in ipairs(star.orbits) do
       if o.planet then
-        if distanceBetween(e.x, e.y, o.planet.body:getX() + o.planet.size/2, o.planet.body:getY() + o.planet.size/2) < 500 then
+        if distanceBetween(e.x, e.y, o.planet.body:getX() + o.planet.size/2, o.planet.body:getY() + o.planet.size/2) < 100000 then
           planetInRange = true
           targetPlanet = o.planet
         end
@@ -87,16 +87,19 @@ function updateEnemies(dt)
     if distanceBetween(e.x, e.y, player.body:getX(), player.body:getY()) < 30 then
       for i,o in ipairs(star.orbits) do
         if o.planet then
-          p.owner = 'none'
-          p.discovered = false
+          o.planet.owner = 'none'
+          o.planet.discovered = false
         end
       end
       enemies = {}
       loots = {}
       bullets = {}
       gameState = 1
-      explosionLong:play()
-      player.body:setPosition(star.body:getX() + star.size * math.cos(angle), star.body:getY() + star.size * math.sin(angle))
+      playSound(explosionLong)
+      local angle = math.rad(love.math.random(0, 360))
+      local playerX = star.body:getX() + star.size * math.cos(angle)
+      local playerY = star.body:getY() + star.size * math.sin(angle)
+      spawnPlayer(playerX, playerY)
       -- cam:lookAt(player.body:getX(), player.body:getY())
     end
   end
@@ -110,7 +113,7 @@ function updateEnemies(dt)
 
     for j,b in ipairs(bullets) do
       if distanceBetween(e.x, e.y, b.x, b.y) < 20 then
-        sndDestroy:play()
+        playSound(sndDestroy)
         if e.health > 0 then
           e.health = e.health - 1
         end

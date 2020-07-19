@@ -1,3 +1,5 @@
+local uiColor = { 0.07, 0.008, 0.07, 0.5 }
+
 function drawHud()
   love.graphics.setFont(fontLarge)
   if gameState == 1 then
@@ -29,7 +31,7 @@ end
 
 function drawMinimap(zoom)
   if showMap == true then
-    love.graphics.setColor(0.42,0.11,0.27,0.15)
+    love.graphics.setColor(uiColor)
     local sX = 0
     local sY = 0
     
@@ -63,7 +65,7 @@ function drawMinimap(zoom)
       'fill',
       250 - ((player.body:getX() - star.body:getX())/scalingFactor),
       250 - ((player.body:getY() - star.body:getY())/scalingFactor),
-      star.size/scalingFactor
+      star.size/scalingFactor / 2
     )
     love.graphics.setColor(1, 1, 1)
 
@@ -115,6 +117,18 @@ function drawMinimap(zoom)
       end
     end
 
+    for i, e in ipairs(enemies) do
+      love.graphics.setColor(1, 0, 0)
+      love.graphics.rectangle(
+        'fill',
+        250 - ((player.body:getX() - e.x)/scalingFactor),
+        250 - ((player.body:getY() - e.y)/scalingFactor),
+        2,
+        2
+      )
+      love.graphics.setColor(1, 1, 1) 
+    end
+
     love.graphics.draw(sprites.miniShip, 250, 250, player.body:getAngle(), nil, nil, sprites.miniShip:getWidth()/2, sprites.miniShip:getHeight()/2)
     
     love.graphics.printf(scaleText, 485, 470, 10, 'center')
@@ -128,7 +142,7 @@ function drawConsole()
     local cW = love.graphics:getWidth() - 530
     local cH = 200
     
-    love.graphics.setColor(0.42,0.11,0.27,0.15)
+    love.graphics.setColor(uiColor)
     love.graphics.rectangle('fill', cX, cY, cW, cH)
     love.graphics.setColor(1,1,1)
 

@@ -6,6 +6,9 @@ sndThrust = love.sound.newSoundData('audio/thrust.ogg')
 sndThrustStart = love.sound.newSoundData('audio/thrust-start.ogg')
 sndThrustHold = love.sound.newSoundData('audio/thrust-hold.ogg')
 sndThrustEnd = love.sound.newSoundData('audio/thrust-release.ogg')
+
+sndThrustHoldPlaying = false
+
 -- music = love.audio.newSource('audio/Vast Surroundings (LOOP).wav', 'stream')
 -- ending = love.audio.newSource('audio/ending.ogg', 'stream')
 

@@ -52,16 +52,13 @@ function love.load(arg)
   bg_quad = love.graphics.newQuad(0, 0, mapw, maph, sprites.background:getWidth(), sprites.background:getHeight())
 
   spawnSolarSystem(mapw/2, maph/2, 10000)
-  -- for i, obj in pairs(gameMap.layers['planets'].objects) do
-  --   spawnPlanet(obj.x, obj.y, obj.width) -- x, y, size
-  -- end
--- spawn player at
+
   local angle = math.rad(love.math.random(0, 360))
   local playerX = star.body:getX() + star.size * math.cos(angle)
   local playerY = star.body:getY() + star.size * math.sin(angle)
   spawnPlayer(playerX, playerY)
 
-  for i = 1, 100, 2 do
+  for i = 1, 500, 2 do
     spawnEnemy()
   end
 end
@@ -123,9 +120,9 @@ function love.draw()
     love.graphics.clear()
     drawMinimap(mapZoom)
   love.graphics.setCanvas()
-  love.graphics.setBlendMode("alpha", "premultiplied")
+  love.graphics.setBlendMode('alpha', 'premultiplied')
   love.graphics.draw(minimap, love.graphics.getWidth() - 510, love.graphics.getHeight() - 510)
-  love.graphics.setBlendMode("alpha")
+  love.graphics.setBlendMode('alpha')
 
   drawConsole()
 end
@@ -148,7 +145,22 @@ function love.mousepressed(x, y, b, istouch)
   end
 end
 
+function love.keypressed(key)
+  if key == 'w' or key == 'a' or key == 's' or key == 'd' then
+    if sndThrustHoldPlaying == false then
+      sndThrustHoldPlaying = true
+      playSound(sndThrustHold)
+    end
+  end
+end
+
 function love.keyreleased(key)
+  if key == 'w' or key == 'a' or key == 's' or key == 'd' then
+    if sndThrustHoldPlaying == true then
+      sndThrustHoldPlaying = false
+    end
+  end
+
   if key == "escape" then
     love.event.quit()
   end
@@ -219,10 +231,6 @@ function love.keyreleased(key)
 
   if key == 'space' and player.warpReady == true then
     warp()
-  end
-
-  if key == 'w' or key == 'a' or key == 's' or key == 'd' then
-    player.sprite = sprites.shipStatic
   end
 end
 

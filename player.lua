@@ -8,7 +8,7 @@ maph = gameMap.height * gameMap.tileheight
 function spawnPlayer(x, y)
   player = {}
   player.body = love.physics.newBody(myWorld, x, y, 'dynamic')
-  player.shape = love.physics.newRectangleShape(90, 90)
+  player.shape = love.physics.newRectangleShape(100, 100)
   player.fixture = love.physics.newFixture(player.body, player.shape)
   
   player.landed = false
@@ -50,7 +50,6 @@ function updatePlayer(dt)
 
     if love.keyboard.isDown('s') and player.body:getY() < maph then -- and player.body:getY() < love.graphics.getHeight()
       player.body:applyForce(0, player.thrust*1000)
-      -- playSound(sndThrustHold) -- TODO this plays constantly instead of once...
       if player.body:getAngle() > 3.93 and player.body:getAngle() < 5.5 then
         if av < -0.5 then s = sprites.shipFrontRotL
         elseif av > 0.5 then s = sprites.shipFrontRotR
@@ -72,7 +71,6 @@ function updatePlayer(dt)
 
     if love.keyboard.isDown('w') and player.body:getY() > 0 then -- and player.body:getY() > 0
       player.body:applyForce(0, -player.thrust*1000)
-      -- playSound(sndThrustHold)
       if player.body:getAngle() > 3.93 and player.body:getAngle() < 5.5 then
         if av < -0.5 then player.sprite = sprites.shipRearRotL
         elseif av > 0.5 then player.sprite = sprites.shipRearRotR
@@ -94,7 +92,6 @@ function updatePlayer(dt)
 
     if love.keyboard.isDown('a') and player.body:getX() > 0 then -- and player.body:getX() > 0
       player.body:applyForce(-player.thrust*1000, 0)
-      -- playSound(sndThrustHold)
       if player.body:getAngle() > 3.93 and player.body:getAngle() < 5.5 then
         if av < -0.5 then player.sprite = sprites.shipRightRotL
         elseif av > 0.5 then player.sprite = sprites.shipRightRotR
@@ -116,7 +113,6 @@ function updatePlayer(dt)
 
     if love.keyboard.isDown('d') and player.body:getX() < mapw then -- and player.body:getX() < love.graphics.getWidth()
       player.body:applyForce(player.thrust*1000, 0)
-      -- playSound(sndThrustHold)
       if player.body:getAngle() > 3.93 and player.body:getAngle() < 5.5 then
         if av < -0.5 then player.sprite = sprites.shipLeftRotL
         elseif av > 0.5 then player.sprite = sprites.shipLeftRotR
@@ -169,7 +165,7 @@ function drawPlayer()
 end
 
 function launch()
-  playSound(sndLaunch)
+  -- playSound(sndLaunch)
   player.landed = false
   if player.joint then
     if not player.joint:isDestroyed() then
@@ -195,8 +191,6 @@ function launch()
 end
 
 function spawnBullet()
-  -- sndShoot:stop()
-  -- sndShoot:play()
   playSound(sndShoot)
 
   bullet = {}
