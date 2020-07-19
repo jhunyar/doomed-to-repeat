@@ -79,21 +79,6 @@ function love.update(dt)
   cam:lookAt(player.body:getX(), player.body:getY())
   -- cam:lockPosition(player.body:getX(), player.body:getY(), cam.smooth.linear(500))
 
-  for i,o in ipairs(star.orbits) do
-    if o.planet then
-      if distanceBetween(o.planet.body:getX(), o.planet.body:getY(), player.body:getX(), player.body:getY()) < o.planet.size/2+50 then
-        o.planet.owner = 'player'
-      end
-      for j,m in ipairs(o.planet.orbits) do
-        if m.moon then
-          if distanceBetween(m.moon.body:getX(), m.moon.body:getY(), player.body:getX(), player.body:getY()) < m.moon.size/2+50 then
-            m.moon.owner = 'player'
-          end
-        end
-      end
-    end
-  end
-
   for i=#bullets, 1, -1 do
     local b = bullets[i]
     if b.x < 0 or b.y < 0 or b.x > mapw or b.y > maph then

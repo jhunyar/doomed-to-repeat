@@ -83,6 +83,16 @@ timeFactor = 0.00000001
 function updatePlanets(dt)
   for i,o in ipairs(star.orbits) do
     if o.planet then
+      -- do this first otherwise the planet has already moved before landing
+      if player.landed == true and distanceBetween(o.planet.body:getX(), o.planet.body:getY(), player.body:getX(), player.body:getY()) < o.planet.size/2 + 50 then
+        player.joint = love.physics.newWeldJoint(
+          player.body, o.planet.body,
+          player.body:getX(), player.body:getY()
+        )
+
+        o.planet.owner = 'player'
+      end
+
       local r = o.radius
       local a = o.planet.angle
       o.planet.angle = o.planet.angle + dt * (500000-r) * timeFactor
@@ -96,14 +106,6 @@ function updatePlanets(dt)
       -- player can discover the planet on minimap
       if distanceBetween(o.planet.body:getX(), o.planet.body:getY(), player.body:getX(), player.body:getY()) < o.planet.size/2 + 1000 then
         o.planet.discovered = true
-      end
-      
-
-      if player.landed == true and distanceBetween(o.planet.body:getX(), o.planet.body:getY(), player.body:getX(), player.body:getY()) < o.planet.size/2 + 50 then
-        player.joint = love.physics.newWeldJoint(
-          player.body, o.planet.body,
-          player.body:getX(), player.body:getY()
-        )
       end
 
       -- enemy can claim the planet
@@ -121,6 +123,16 @@ end
 function updateMoons(planet, dt)
   for i,o in ipairs(planet.orbits) do
     if o.moon then
+      -- do this first otherwise the moon has already moved before landing
+      if player.landed == true and distanceBetween(o.moon.body:getX(), o.moon.body:getY(), player.body:getX(), player.body:getY()) < o.moon.size/2 + 50 then
+        player.moonJoint = love.physics.newWeldJoint(
+          player.body, o.moon.body,
+          player.body:getX(), player.body:getY()
+        )
+
+        o.moon.owner = 'player'
+      end
+
       local r = o.radius
       local a = o.moon.angle
       o.moon.angle = o.moon.angle + dt * (500000-r) * timeFactor * 10
@@ -134,13 +146,6 @@ function updateMoons(planet, dt)
       -- player can discover the moon on minimap
       if distanceBetween(o.moon.body:getX(), o.moon.body:getY(), player.body:getX(), player.body:getY()) < o.moon.size/2 + 1000 then
         o.moon.discovered = true
-      end
-
-      if player.landed == true and distanceBetween(o.moon.body:getX(), o.moon.body:getY(), player.body:getX(), player.body:getY()) < o.moon.size/2 + 50 then
-        player.moonJoint = love.physics.newWeldJoint(
-          player.body, o.moon.body,
-          player.body:getX(), player.body:getY()
-        )
       end
 
       -- enemy can claim the moon
