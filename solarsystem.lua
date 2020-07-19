@@ -35,6 +35,9 @@ function spawnPlanet(orbit)
   p.angle = math.rad(love.math.random(0, 360))
   p.discovered = false
   p.owner = 'none'
+  p.startingRes = math.floor(p.size / 2)
+  p.res = p.startingRes
+  p.harvestedRes = 0
 
   local pX = star.body:getX() + orbit.radius * math.cos(p.angle)
   local pY = star.body:getY() + orbit.radius * math.sin(p.angle)
@@ -68,6 +71,9 @@ function spawnMoon(planet, orbit)
     m.angle = math.rad(love.math.random(0, 360))
     m.discovered = false
     m.owner = 'none'
+    m.startingRes = math.floor(p.size / 2)
+    m.res = m.startingRes
+    m.harvestedRes = 0
 
     local mX = planet.body:getX() + orbit.radius * math.cos(m.angle)
     local mY = planet.body:getY() + orbit.radius * math.sin(m.angle)
