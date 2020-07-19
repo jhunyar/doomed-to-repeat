@@ -72,14 +72,9 @@ function love.update(dt)
   updateEnemies(dt)
   updatePlanets(dt)
 
-  -- look at 200 x and 200 y in relation to the player angle
-
-  -- find out what direction the player is facing (player.body:getAngle())
   local cx = player.body:getX() + math.cos(player.body:getAngle()) * 200
   local cy = player.body:getY() + math.sin(player.body:getAngle()) * 200
-
   cam:lookAt(cx, cy)
-  -- cam:lockPosition(player.body:getX(), player.body:getY(), cam.smooth.linear())
 
   for i=#bullets, 1, -1 do
     local b = bullets[i]

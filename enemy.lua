@@ -13,34 +13,10 @@ function spawnEnemy()
   enemy.arrived = false
   enemy.health = 3
 
-  -- local side = love.math.random(1, 4)
-
   enemy.x = love.math.random(0, mapw)
   enemy.y = love.math.random(0, maph)
   enemy.sx = love.math.random(0, mapw)
   enemy.sy = love.math.random(0, maph)
-
-  -- if side == 1 then
-  --   enemy.x = -30
-  --   enemy.sx = -30
-  --   enemy.y = love.math.random(0, maph)
-  --   enemy.sy = love.math.random(0, maph)
-  -- elseif side == 2 then
-  --   enemy.x = love.math.random(0, mapw)
-  --   enemy.sx = love.math.random(0, mapw)
-  --   enemy.y = -30
-  --   enemy.sy = -30
-  -- elseif side == 3 then
-  --   enemy.x = mapw + 30
-  --   enemy.sx = mapw + 30
-  --   enemy.y = love.math.random(0, maph)
-  --   enemy.sy = love.math.random(0, maph)
-  -- else
-  --   enemy.x = love.math.random(0, mapw)
-  --   enemy.sx = love.math.random(0, mapw)
-  --   enemy.y = maph + 30
-  --   enemy.sy = maph + 30
-  -- end
 
   enemy.wx, enemy.wy = genWaypoint(enemy)
 

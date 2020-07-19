@@ -7,22 +7,6 @@ sndThrustStart = love.sound.newSoundData('audio/thrust-start.ogg')
 sndThrustHold = love.sound.newSoundData('audio/thrust-hold.ogg')
 sndThrustEnd = love.sound.newSoundData('audio/thrust-release.ogg')
 
-sndThrustHoldPlaying = false
-
--- music = love.audio.newSource('audio/Vast Surroundings (LOOP).wav', 'stream')
--- ending = love.audio.newSource('audio/ending.ogg', 'stream')
-
--- love.audio.setEffect('reverb', {type = 'reverb'})
--- sndLaunch:setEffect('reverb')
-
--- sndShoot:setVolume(0.25)
--- sndDestroy:setVolume(0.5)
--- music:setVolume(0.15)
--- music:setLooping(true)
--- ending:setVolume(0.5)
-
--- sndShootDt = love.sound.newSoundData('audio/explosion-short.ogg')
-
 function playSound(sd)
   love.audio.newSource(sd, 'static'):play()
 end
