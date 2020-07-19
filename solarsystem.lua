@@ -12,14 +12,14 @@ function spawnSolarSystem(x, y, size)
   -- create orbits for this star
   local minOrbitRadius = star.size/2 + 50000 -- not too close to the star as it will eventually kill the player
   local maxOrbitRadius = mapw/2 - star.size/2 - 20000 -- assuming the star is always at the center of the map here
-  local minOrbits = 5
-  local maxOrbits = 20
+  local minOrbits = 6
+  local maxOrbits = 10
   local totalOrbits = love.math.random(minOrbits, maxOrbits)
   local orbitSeparation = (maxOrbitRadius - minOrbitRadius) / totalOrbits
   
   for i=minOrbitRadius, maxOrbitRadius, orbitSeparation do
     orbit = {}
-    orbit.radius = math.random(i-10000, i + 10000)
+    orbit.radius = math.random(i - 10000, i + 10000)
     -- orbit.speed = love.math.random(50, 100)
 
     spawnPlanet(orbit)
@@ -78,13 +78,14 @@ function spawnMoon(planet, orbit)
   end
 end
 
+timeFactor = 0.00000001
 -- Every dt, we need to update the positon of planets and moons in the solar system
 function updatePlanets(dt)
   for i,o in ipairs(star.orbits) do
     if o.planet then
       local r = o.radius
       local a = o.planet.angle
-      o.planet.angle = o.planet.angle + dt * (500000-r) * 0.00000001
+      o.planet.angle = o.planet.angle + dt * (500000-r) * timeFactor
 
       local ox = star.body:getX()
       local oy = star.body:getY()
@@ -122,7 +123,7 @@ function updateMoons(planet, dt)
     if o.moon then
       local r = o.radius
       local a = o.moon.angle
-      o.moon.angle = o.moon.angle + dt * (500000-r) * 0.00000001
+      o.moon.angle = o.moon.angle + dt * (500000-r) * timeFactor * 10
 
       local px = planet.body:getX()
       local py = planet.body:getY()

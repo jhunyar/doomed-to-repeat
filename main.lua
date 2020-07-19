@@ -4,6 +4,8 @@ function love.load(arg)
   myWorld = love.physics.newWorld(0, 0, false)
   myWorld:setCallbacks(beginContact, endContact, preSolve, postSolve)
 
+  minimap = love.graphics.newCanvas(500, 500)
+
   cursor = love.mouse.newCursor("sprites/cursor.png", 0, 0)
   love.mouse.setCursor(cursor)
 
@@ -131,7 +133,15 @@ function love.draw()
   camX,camY = cam:cameraCoords(player.body:getX(), player.body:getY())
 
   drawHud()
-  drawMinimap(mapZoom)
+
+  love.graphics.setCanvas(minimap)
+    love.graphics.clear()
+    drawMinimap(mapZoom)
+  love.graphics.setCanvas()
+  love.graphics.setBlendMode("alpha", "premultiplied")
+  love.graphics.draw(minimap, love.graphics.getWidth() - 510, love.graphics.getHeight() - 510)
+  love.graphics.setBlendMode("alpha")
+
   drawConsole()
 end
 
@@ -183,10 +193,24 @@ function love.keyreleased(key)
   end
 
   if key == 'n' then
-    if mapZoom == 1 then
+    if mapZoom == 0 then
+      mapZoom = 1
+    elseif mapZoom == 1 then
       mapZoom = 2
+    elseif mapZoom == 2 then
+      mapZoom = 3
+    elseif mapZoom == 3 then
+      mapZoom = 4
     else
-      mapZoom =1
+      mapZoom = 0
+    end
+  end
+
+  if key == 't' then
+    if timeFactor == 0.00000001 then
+      timeFactor = 0.000001
+    else
+      timeFactor = 0.00000001
     end
   end
 
