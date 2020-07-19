@@ -8,7 +8,7 @@ function spawnEnemy()
   enemy.wx = 0
   enemy.wy = 0
   enemy.angle = 0
-  enemy.speed = 1000
+  enemy.speed = 500
   enemy.dead = false
   enemy.arrived = false
   enemy.health = 3
