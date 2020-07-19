@@ -1,30 +1,41 @@
+require('solarsystem')
 sti = require('sti/sti')
-gameMap = sti('maps/map-lg.lua')
+gameMap = sti('maps/map-huge.lua')
 
 mapw = gameMap.width * gameMap.tilewidth
 maph = gameMap.height * gameMap.tileheight
 
-player = {}
-player.body = love.physics.newBody(myWorld, mapw/2, maph/2, 'dynamic')
-player.shape = love.physics.newRectangleShape(90, 90)
-player.fixture = love.physics.newFixture(player.body, player.shape)
-
-player.linearDampingStatus = 'OFF'
-player.linearDamping = 0
-player.thrust = 100
-player.maxSpeed = 600
-player.maxTorque = 10^5
-
-player.maxAmmo = 100
-player.ammo = 100
-player.sprite = sprites.shipStatic
-
-player.body:setMass(500)
-player.body:setLinearDamping(player.linearDamping)
--- player.body:setFixedRotation(true)
+function spawnPlayer(x, y)
+  player = {}
+  player.body = love.physics.newBody(myWorld, x, y, 'dynamic')
+  player.shape = love.physics.newRectangleShape(100, 100)
+  player.fixture = love.physics.newFixture(player.body, player.shape)
+  
+  player.landed = false
+  player.linearDampingStatus = 'OFF'
+  player.linearDamping = 0
+  player.thrust = 100
+  player.maxSpeed = 600
+  player.maxTorque = 10^5
+  player.currentSector = math.ceil(player.body:getX()/2000 - 250) .. ':' .. math.ceil(player.body:getY()/2000 - 250)
+  
+  player.maxAmmo = 100
+  player.ammo = 100
+  player.sprite = sprites.shipStatic
+  
+  player.scannerData = {}
+  player.warpTargetX = 0
+  player.warpTargetY = 0
+  player.warpReady = false
+  
+  player.body:setMass(500)
+  player.body:setLinearDamping(player.linearDamping)
+  -- player.body:setFixedRotation(true)
+end
 
 function updatePlayer(dt)
   if gameState == 2 then
+    player.currentSector = math.ceil(player.body:getX()/2000 - 250) .. ':' .. math.ceil(player.body:getY()/2000 - 250)
     if player.body:getY() > maph or player.body:getY() < 0 or player.body:getX() < 0 or player.body:getX() > mapw then
       player.body:setLinearDamping(1.5)
     else
@@ -40,9 +51,9 @@ function updatePlayer(dt)
     if love.keyboard.isDown('s') and player.body:getY() < maph then -- and player.body:getY() < love.graphics.getHeight()
       player.body:applyForce(0, player.thrust*1000)
       if player.body:getAngle() > 3.93 and player.body:getAngle() < 5.5 then
-        if av < -0.5 then player.sprite = sprites.shipFrontRotL
-        elseif av > 0.5 then player.sprite = sprites.shipFrontRotR
-        else player.sprite = sprites.shipFront end
+        if av < -0.5 then s = sprites.shipFrontRotL
+        elseif av > 0.5 then s = sprites.shipFrontRotR
+        else s = sprites.shipFront end
       elseif player.body:getAngle() < 3.93 and player.body:getAngle() > 2.36 then
         if av < -0.5 then player.sprite = sprites.shipRightRotL
         elseif av > 0.5 then player.sprite = sprites.shipRightRotR
@@ -123,9 +134,9 @@ function updatePlayer(dt)
 
     updateTorque()
 
-    local vx, vy = player.body:getLinearVelocity()
-    vx, vy = clamp(vx, vy, player.maxSpeed)
-    player.body:setLinearVelocity(vx, vy)
+    -- local vx, vy = player.body:getLinearVelocity()
+    -- -- vx, vy = clamp(vx, vy, player.maxSpeed)
+    -- player.body:setLinearVelocity(vx, vy)
 
     for i,l in ipairs(loots) do
       if distanceBetween(l.x, l.y, player.body:getX(), player.body:getY()) < 30 then
@@ -137,18 +148,35 @@ function updatePlayer(dt)
       end
     end
 
-    for i,p in ipairs(planets) do
-      gravityWell(player.body, p.x, p.y, p.size*10, p.size*4) -- body, x, y, power, epsilon
+    for i,o in ipairs(star.orbits) do
+      if o.planet then
+        gravityWell(player.body, o.planet.body:getX(), o.planet.body:getY(), o.planet.size*10, o.planet.size*4) -- body, x, y, power, epsilon
+      end
     end
   end
 end
 
 function drawPlayer()
+  if distanceBetween(player.body:getX(), player.body:getY(), star.body:getX(), star.body:getY()) < star.size then
+    love.graphics.setColor(1, 1, 0)
+  end
   love.graphics.draw(player.sprite, player.body:getX(), player.body:getY(), player.body:getAngle(), 1, 1, sprites.player:getWidth()/2, sprites.player:getHeight()/2)
+  love.graphics.setColor(1, 1, 1)
 end
 
 function launch()
-  sndLaunch:play()
+  -- playSound(sndLaunch)
+  player.landed = false
+  if player.joint then
+    if not player.joint:isDestroyed() then
+      player.joint:destroy()
+    end
+  end
+  if player.moonJoint then
+    if not player.moonJoint:isDestroyed() then
+      player.moonJoint:destroy()
+    end
+  end
   mx,my = cam:mousePosition()
   bx,by = player.body:getPosition()
   dx, dy = mx - bx, my - by
@@ -163,14 +191,14 @@ function launch()
 end
 
 function spawnBullet()
-  local instance = sndShoot:play()
+  playSound(sndShoot)
 
   bullet = {}
 
   bullet.x = player.body:getX()
   bullet.y = player.body:getY()
   bullet.speed = 1000
-  bullet.direction = player_mouse_angle()
+  bullet.direction = player.body:getAngle()
   bullet.dead = false
 
   table.insert(bullets, bullet)
@@ -232,4 +260,53 @@ function updateTorque()
 
   fltAngle = player.body:getAngle() % (2*math.pi)
   player.body:setAngle(fltAngle)
+end
+
+function lrScan()
+  player.scannerData = {}
+  local angle = player.body:getAngle()
+
+  for i,o in ipairs(star.orbits) do
+    -- local r = math.sqrt((p.body:getX() - player.body:getX())^2 + (p.body:getY() - player.body:getY())^2)
+    if o.planet then
+      local r = 500000
+      local a = math.atan2(player.body:getY() - o.planet.body:getY(), player.body:getX() - o.planet.body:getX()) + math.pi
+      local s = angle - math.rad(5)
+      local e = angle + math.rad(5)
+      local d = distanceBetween(o.planet.body:getX(), o.planet.body:getY(), player.body:getX(), player.body:getY())
+
+      if d < r then
+        -- If (starting angle is less than ending angle and the point is within that arc)
+        -- or (starting angle is greater than ending angle (we are encompassing zero in the arc) and the angle of the point is within the starting and ending angle)
+        if (s < e and (s < a and a < e)) or (s > e and (a > s or a < e)) then
+          ping = { 
+            x = o.planet.body:getX(),
+            y = o.planet.body:getY(),
+            sector = math.floor(o.planet.body:getX()/2000 - 250) .. ':' .. math.floor(o.planet.body:getY()/2000 - 250),
+            data = 'Ping! Body found within scanner range of range: ' .. r .. ' at ' .. math.floor(d) 
+            .. '. Scanner sweep at 10 degrees from ' .. math.floor(math.deg(s)) .. ' to ' 
+            .. math.floor(math.deg(e)) .. ' identified a target vector of ' .. math.floor(math.deg(a))
+            .. '. Target is in sector ' .. math.floor(o.planet.body:getX()/2000 - 250) .. ':' .. math.floor(o.planet.body:getY()/2000 - 250) .. '. Press I to isolate the signal for warp.'
+          }
+          
+          table.insert(player.scannerData, ping)
+        end
+      end
+    end
+  end
+end
+
+function isolateScanTarget(x, y, cushion)
+  player.warpTargetX = x + cushion
+  player.warpTargetY = y + cushion
+  player.warpReady = true
+end
+
+function warp()
+  player.body:setX(player.warpTargetX)
+  player.body:setY(player.warpTargetY)
+  player.warpReady = false
+  player.warpTargetX = 0
+  player.warpTargetY = 0
+  player.scannerData = {}
 end

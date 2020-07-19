@@ -16,7 +16,7 @@ function enemy_waypoint_angle(e)
 end
 
 function getAngle(a, b)
-  return math.atan2(b.y - a.y, b.x - a.x)
+  return math.atan2(b.body:getY() - a.y, b.body:getX() - a.x)
 end
 
 function clamp(x, y, d)
@@ -52,4 +52,10 @@ end
 function radToDeg(r)
   deg = r*180/math.pi
   return deg
+end
+
+-- return 'v' rounded to 'p' decimal places:
+function round(v, p)
+local mult = math.pow(10, p or 0) -- round to 0 places when p not supplied
+  return math.floor(v * mult + 0.5) / mult
 end
