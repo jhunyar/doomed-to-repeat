@@ -11,12 +11,20 @@ function enemy_player_angle(enemy)
   return math.atan2(player.body:getY() - enemy.y, player.body:getX() - enemy.x)
 end
 
+function planet_player_angle(planet)
+  return math.atan2(player.body:getY() - planet.body:getY(), player.body:getX() - planet.body:getX())
+end
+
 function enemy_waypoint_angle(e)
   return math.atan2(e.wy - e.y, e.wx - e.x)
 end
 
 function getAngle(a, b)
   return math.atan2(b.body:getY() - a.y, b.body:getX() - a.x)
+end
+
+function getBodyAngle(a, b)
+  return math.atan2(b.body:getY() - a.body:getY(), b.body:getX() - a.body:getX())
 end
 
 function clamp(x, y, d)

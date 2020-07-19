@@ -8,7 +8,7 @@ maph = gameMap.height * gameMap.tileheight
 function spawnPlayer(x, y)
   player = {}
   player.body = love.physics.newBody(myWorld, x, y, 'dynamic')
-  player.shape = love.physics.newRectangleShape(100, 100)
+  player.shape = love.physics.newRectangleShape(90, 90)
   player.fixture = love.physics.newFixture(player.body, player.shape)
   
   player.landed = false
@@ -51,9 +51,9 @@ function updatePlayer(dt)
     if love.keyboard.isDown('s') and player.body:getY() < maph then -- and player.body:getY() < love.graphics.getHeight()
       player.body:applyForce(0, player.thrust*1000)
       if player.body:getAngle() > 3.93 and player.body:getAngle() < 5.5 then
-        if av < -0.5 then s = sprites.shipFrontRotL
-        elseif av > 0.5 then s = sprites.shipFrontRotR
-        else s = sprites.shipFront end
+        if av < -0.5 then player.sprite = sprites.shipFrontRotL
+        elseif av > 0.5 then player.sprite = sprites.shipFrontRotR
+        else player.sprite = sprites.shipFront end
       elseif player.body:getAngle() < 3.93 and player.body:getAngle() > 2.36 then
         if av < -0.5 then player.sprite = sprites.shipRightRotL
         elseif av > 0.5 then player.sprite = sprites.shipRightRotR

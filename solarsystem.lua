@@ -1,3 +1,5 @@
+local fontMd = love.graphics.newFont(20)
+
 function spawnSolarSystem(x, y, size)
   star = {}
   star.orbits = {}
@@ -71,7 +73,7 @@ function spawnMoon(planet, orbit)
     m.angle = math.rad(love.math.random(0, 360))
     m.discovered = false
     m.owner = 'none'
-    m.startingRes = math.floor(p.size / 2)
+    m.startingRes = math.floor(m.size / 2)
     m.res = m.startingRes
     m.harvestedRes = 0
 
@@ -121,6 +123,13 @@ function updatePlanets(dt)
         end
       end
 
+      if o.planet.owner == 'player' then
+        if o.planet.res > 0 then
+          o.planet.res = o.planet.res - dt -- 1 per second
+          o.planet.harvestedRes = o.planet.harvestedRes + dt
+        end
+      end
+
       updateMoons(o.planet, dt)
     end
   end
@@ -155,7 +164,7 @@ function updateMoons(planet, dt)
       end
 
       -- enemy can claim the moon
-      for j,e in ipairs(enemies) do    -- enemy claims planet
+      for j,e in ipairs(enemies) do    -- enemy claims moon
         if distanceBetween(e.x, e.y, o.moon.body:getX(), o.moon.body:getY()) < o.moon.size/2 then
           o.moon.owner = 'enemy'
         end
@@ -190,6 +199,19 @@ function drawPlanets()
       love.graphics.setColor(1,1,1)
       love.graphics.setLineWidth(1)
 
+      if distanceBetween(o.planet.body:getX(), o.planet.body:getY(), player.body:getX(), player.body:getY()) < o.planet.size/2 + 1000 then
+        love.graphics.setFont(fontMd)
+        love.graphics.printf(
+          'Resources: ' .. math.floor(o.planet.res) .. '\n Harvested: ' .. math.floor(o.planet.harvestedRes),
+          player.body:getX() - 150,
+          player.body:getY() - 200,
+          300,
+          'center'
+        )
+
+        love.graphics.line(o.planet.body:getX(), o.planet.body:getY(), player.body:getX() - 100, player.body:getY() - 180)
+      end
+
       drawMoons(o.planet)
     end
   end
@@ -216,6 +238,19 @@ function drawMoons(planet)
       love.graphics.circle('line', o.moon.body:getX(), o.moon.body:getY(), o.moon.size/2)
       love.graphics.setColor(1,1,1)
       love.graphics.setLineWidth(1)
+
+      if distanceBetween(o.moon.body:getX(), o.moon.body:getY(), player.body:getX(), player.body:getY()) < o.moon.size/2 + 1000 then
+        love.graphics.setFont(fontMd)
+        love.graphics.printf(
+          'Resources: ' .. math.floor(o.moon.res) .. '\n Harvested: ' .. math.floor(o.moon.harvestedRes),
+          player.body:getX() - 150,
+          player.body:getY() - 200,
+          300,
+          'center'
+        )
+
+        love.graphics.line(o.moon.body:getX(), o.moon.body:getY(), player.body:getX() - 100, player.body:getY() - 180)
+      end
     end
   end
 end
