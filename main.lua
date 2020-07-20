@@ -26,7 +26,6 @@ function love.load(arg)
   require('solarsystem')
   require('ui')
   require('enemy')
-  -- require('planets')
   require('spawn')
   require('helpers')
   require('sound')
@@ -39,7 +38,7 @@ function love.load(arg)
   showHUD = true
   showMap = true
   mapZoom = 1
-  showConsole = true
+  showConsole = false
 
   fontLarge = love.graphics.newFont(40)
   fontSmall = love.graphics.newFont(20)
@@ -63,6 +62,7 @@ function love.load(arg)
   end
 
   crt = moonshine(510, 510, moonshine.effects.godsray).chain(moonshine.effects.chromasep).chain(moonshine.effects.glow).chain(moonshine.effects.crt).chain(moonshine.effects.scanlines)
+  crt.glow.strength = 2
   crt.chromasep.radius = 5
   crt.godsray.exposure = 0.1
   crt.godsray.density = 0.2

@@ -213,9 +213,15 @@ function drawBullets()
 end
 
 function updateBullets(dt)
+  local vx, vy = player.body:getLinearVelocity()
+  if vx < 0 then vx = vx * -1 end
+  if vy < 0 then vy = vy * -1 end
+  local V = vx + vy
+
+
   for i,b in ipairs(bullets) do
-    b.x = b.x + math.cos(b.direction) * b.speed * dt
-    b.y = b.y + math.sin(b.direction) * b.speed * dt
+    b.x = b.x + math.cos(b.direction) * (b.speed + V) * dt
+    b.y = b.y + math.sin(b.direction) * (b.speed + V) * dt
   end
 end
 
