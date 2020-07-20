@@ -31,7 +31,6 @@ end
 
 function drawMinimap(zoom)
   if showMap == true then
-    love.graphics.setColor(uiColor)
     local sX = 0
     local sY = 0
     
@@ -58,7 +57,13 @@ function drawMinimap(zoom)
       scaleText = '5X'
     end
 
-    love.graphics.rectangle('fill', 0, 0, 500, 500)
+    love.graphics.setLineWidth(5)
+    love.graphics.setColor(0.5, 0.5, 0.5)
+    love.graphics.rectangle('line', 0, 0, 510, 510)
+    
+    love.graphics.setLineWidth(1)
+    love.graphics.setColor(uiColor)
+    love.graphics.rectangle('fill', 5, 5, 500, 500)
 
     love.graphics.setColor(1, 1, 0)
     love.graphics.circle(

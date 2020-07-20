@@ -4,11 +4,12 @@ function love.load(arg)
   myWorld = love.physics.newWorld(0, 0, false)
   myWorld:setCallbacks(beginContact, endContact, preSolve, postSolve)
 
-  minimap = love.graphics.newCanvas(500, 500)
+  minimap = love.graphics.newCanvas(510, 510)
 
   cursor = love.mouse.newCursor("sprites/cursor.png", 0, 0)
   love.mouse.setCursor(cursor)
 
+  moonshine = require('shaders/moonshine')
   anim8 = require('anim8/anim8')
   sti = require('sti/sti')
   Camera = require('hump/camera')
@@ -60,6 +61,15 @@ function love.load(arg)
   for i = 1, 100, 2 do
     spawnEnemy()
   end
+
+  crt = moonshine(510, 510, moonshine.effects.godsray).chain(moonshine.effects.chromasep).chain(moonshine.effects.glow).chain(moonshine.effects.crt).chain(moonshine.effects.scanlines)
+  crt.chromasep.radius = 5
+  crt.godsray.exposure = 0.1
+  crt.godsray.density = 0.2
+  crt.godsray.weight = 0.2
+  crt.scanlines.width = 1
+  crt.scanlines.thickness = 0.5
+  crt.scanlines.opacity = 0.2
 end
 
 function love.update(dt)
@@ -118,10 +128,12 @@ function love.draw()
 
   love.graphics.setCanvas(minimap)
     love.graphics.clear()
-    drawMinimap(mapZoom)
+    crt(function()
+      drawMinimap(mapZoom)
+    end)
   love.graphics.setCanvas()
   love.graphics.setBlendMode('alpha', 'premultiplied')
-  love.graphics.draw(minimap, love.graphics.getWidth() - 510, love.graphics.getHeight() - 510)
+  love.graphics.draw(minimap, love.graphics.getWidth() - 520, love.graphics.getHeight() - 520)
   love.graphics.setBlendMode('alpha')
 
   drawConsole()
