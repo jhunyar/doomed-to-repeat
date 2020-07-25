@@ -1,5 +1,5 @@
 require('solarsystem')
-sti = require('sti/sti')
+sti = require('lib/sti/sti')
 gameMap = sti('maps/map-huge.lua')
 
 mapw = gameMap.width * gameMap.tilewidth

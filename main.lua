@@ -9,11 +9,11 @@ function love.load(arg)
   cursor = love.mouse.newCursor("sprites/cursor.png", 0, 0)
   love.mouse.setCursor(cursor)
 
-  moonshine = require('shaders/moonshine')
-  anim8 = require('anim8/anim8')
-  sti = require('sti/sti')
-  Camera = require('hump/camera')
-  Timer = require('hump/timer')
+  moonshine = require('lib/shaders/moonshine')
+  anim8 = require('lib/anim8/anim8')
+  sti = require('lib/sti/sti')
+  Camera = require('lib/hump/camera')
+  Timer = require('lib/hump/timer')
   cam = Camera()
 
   enemies = {}
