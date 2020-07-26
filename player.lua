@@ -5,16 +5,25 @@ gameMap = sti('maps/map-huge.lua')
 mapw = gameMap.width * gameMap.tilewidth
 maph = gameMap.height * gameMap.tileheight
 
-function spawnPlayer(x, y)
+function spawnPlayer()
+  -- spawn player near a random planet
+  local spawnPlanet = star.orbits[love.math.random(#star.orbits)].planet
+  local angle = math.rad(love.math.random(0, 360))
+  local x = spawnPlanet.body:getX() + (spawnPlanet.size/2 + 12) * math.cos(angle)
+  local y = spawnPlanet.body:getY() + (spawnPlanet.size/2 + 12) * math.sin(angle)
+
   player = {}
   player.body = love.physics.newBody(myWorld, x, y, 'dynamic')
   player.shape = love.physics.newRectangleShape(90, 90)
   player.fixture = love.physics.newFixture(player.body, player.shape)
   
+  -- face the player away from the center of the planet
+  player.body:setAngle(getBodyAngle(player, spawnPlanet) - math.pi)
+ 
   player.landed = false
   player.linearDampingStatus = 'OFF'
   player.linearDamping = 0
-  player.thrust = 100
+  player.thrust = 200
   player.maxSpeed = 600
   player.maxTorque = 10^5
   player.currentSector = math.ceil(player.body:getX()/2000 - 250) .. ':' .. math.ceil(player.body:getY()/2000 - 250)

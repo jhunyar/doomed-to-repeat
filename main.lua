@@ -51,10 +51,7 @@ function love.load(arg)
 
   spawnSolarSystem(mapw/2, maph/2, 10000)
 
-  local angle = math.rad(love.math.random(0, 360))
-  local playerX = star.body:getX() + star.size * math.cos(angle)
-  local playerY = star.body:getY() + star.size * math.sin(angle)
-  spawnPlayer(playerX, playerY)
+  spawnPlayer()
   cam:lookAt(player.body:getX(), player.body:getY())
 
   for i = 1, 100, 2 do
