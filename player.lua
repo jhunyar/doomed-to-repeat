@@ -195,9 +195,13 @@ function spawnBullet()
 
   bullet = {}
 
+  local vx, vy = player.body:getLinearVelocity()
+  if vx < 0 then vx = vx * -1 end
+  if vy < 0 then vy = vy * -1 end
+
   bullet.x = player.body:getX()
   bullet.y = player.body:getY()
-  bullet.speed = 1000
+  bullet.speed = 1000 + math.floor(vx+vy)
   bullet.direction = player.body:getAngle()
   bullet.dead = false
 
