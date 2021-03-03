@@ -149,8 +149,9 @@ function drawConsole()
     love.graphics.setColor(0, 0, 0, 0.8)
     love.graphics.rectangle('fill', cX + 10, cY + 10, 100, 30)
     love.graphics.setColor(1, 1, 1)
-    if player.scannerData[1] then
-      love.graphics.printf(player.scannerData[1].sector, cX + 12, cY + 12, 100, 'center')
-    end
+    love.graphics.printf(player.body:getAngle(), cX + 12, cY + 12, 100, 'center')
+    -- if player.scannerData[1] then
+    --   love.graphics.printf(player.scannerData[1].sector, cX + 12, cY + 12, 100, 'center')
+    -- end
   end
 end

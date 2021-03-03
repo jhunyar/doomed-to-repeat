@@ -11,12 +11,14 @@ function spawnPlayer(x, y)
   player.shape = love.physics.newRectangleShape(100, 100)
   player.fixture = love.physics.newFixture(player.body, player.shape)
   
+  player.forces = {0,0,0,0} -- thruster booleans
   player.landed = false
   player.linearDampingStatus = 'OFF'
   player.linearDamping = 0
   player.thrust = 100
   player.maxSpeed = 600
-  player.maxTorque = 10^5
+  player.acceleration = 50000
+  player.rotSpeed = 10000
   player.currentSector = math.ceil(player.body:getX()/2000 - 250) .. ':' .. math.ceil(player.body:getY()/2000 - 250)
   
   player.maxAmmo = 100
@@ -42,97 +44,37 @@ function updatePlayer(dt)
       player.body:setLinearDamping(player.linearDamping)
     end
 
-    local av = player.body:getAngularVelocity()
-  
-    if av < -0.5 then player.sprite = sprites.shipRotL
-    elseif av > 0.5 then player.sprite = sprites.shipRotR
-    else player.sprite = sprites.shipStatic end
+    local f = table.concat(player.forces)
+    if f == '0000' then player.sprite = sprites.shipStatic end
+    if f == '1000' then player.sprite = sprites.shipRear end
+    if f == '1100' then player.sprite = sprites.shipRearRotL end
+    if f == '1001' then player.sprite = sprites.shipRearRotR end
+    if f == '0010' then player.sprite = sprites.shipFront end
+    if f == '0110' then player.sprite = sprites.shipFrontRotL end
+    if f == '0011' then player.sprite = sprites.shipFrontRotR end
+    if f == '0100' then player.sprite = sprites.shipRotL end
+    if f == '0001' then player.sprite = sprites.shipRotR end
 
-    if love.keyboard.isDown('s') and player.body:getY() < maph then -- and player.body:getY() < love.graphics.getHeight()
-      player.body:applyForce(0, player.thrust*1000)
-      if player.body:getAngle() > 3.93 and player.body:getAngle() < 5.5 then
-        if av < -0.5 then s = sprites.shipFrontRotL
-        elseif av > 0.5 then s = sprites.shipFrontRotR
-        else s = sprites.shipFront end
-      elseif player.body:getAngle() < 3.93 and player.body:getAngle() > 2.36 then
-        if av < -0.5 then player.sprite = sprites.shipRightRotL
-        elseif av > 0.5 then player.sprite = sprites.shipRightRotR
-        else player.sprite = sprites.shipRight end
-      elseif player.body:getAngle() < 2.36 and player.body:getAngle() > 0.79 then
-        if av < -0.5 then player.sprite = sprites.shipRearRotL
-        elseif av > 0.5 then player.sprite = sprites.shipRearRotR
-        else player.sprite = sprites.shipRear end
-      else
-        if av < -0.5 then player.sprite = sprites.shipLeftRotL
-        elseif av > 0.5 then player.sprite = sprites.shipLeftRotR
-        else player.sprite = sprites.shipLeft end
-      end
+    local angle = player.body:getAngle()
+    local x = math.cos(angle) * player.acceleration
+    local y = math.sin(angle) * player.acceleration
+    
+    -- originally when 's' was down, applyForce 0, player.thrust*1000. 's' should only handle applying force opposite the player's angle now!
+    if love.keyboard.isDown('w') and player.body:getY() < maph then -- and player.body:getY() < love.graphics.getHeight()
+      player.body:applyForce(x, y)
     end
 
-    if love.keyboard.isDown('w') and player.body:getY() > 0 then -- and player.body:getY() > 0
-      player.body:applyForce(0, -player.thrust*1000)
-      if player.body:getAngle() > 3.93 and player.body:getAngle() < 5.5 then
-        if av < -0.5 then player.sprite = sprites.shipRearRotL
-        elseif av > 0.5 then player.sprite = sprites.shipRearRotR
-        else player.sprite = sprites.shipRear end
-      elseif player.body:getAngle() < 3.93 and player.body:getAngle() > 2.36 then
-        if av < -0.5 then player.sprite = sprites.shipLeftRotL
-        elseif av > 0.5 then player.sprite = sprites.shipLeftRotR
-        else player.sprite = sprites.shipLeft end
-      elseif player.body:getAngle() < 2.36 and player.body:getAngle() > 0.79 then
-        if av < -0.5 then player.sprite = sprites.shipFrontRotL
-        elseif av > 0.5 then player.sprite = sprites.shipFrontRotR
-        else player.sprite = sprites.shipFront end
-      else
-        if av < -0.5 then player.sprite = sprites.shipRightRotL
-        elseif av > 0.5 then player.sprite = sprites.shipRightRotR
-        else player.sprite = sprites.shipRight end
-      end
+    if love.keyboard.isDown('a') and player.body:getY() > 0 then -- and player.body:getY() > 0
+      player.body:applyTorque(-player.rotSpeed)
     end
 
-    if love.keyboard.isDown('a') and player.body:getX() > 0 then -- and player.body:getX() > 0
-      player.body:applyForce(-player.thrust*1000, 0)
-      if player.body:getAngle() > 3.93 and player.body:getAngle() < 5.5 then
-        if av < -0.5 then player.sprite = sprites.shipRightRotL
-        elseif av > 0.5 then player.sprite = sprites.shipRightRotR
-        else player.sprite = sprites.shipRight end
-      elseif player.body:getAngle() < 3.93 and player.body:getAngle() > 2.36 then
-        if av < -0.5 then player.sprite = sprites.shipRearRotL
-        elseif av > 0.5 then player.sprite = sprites.shipRearRotR
-        else player.sprite = sprites.shipRear end
-      elseif player.body:getAngle() < 2.36 and player.body:getAngle() > 0.79 then
-        if av < -0.5 then player.sprite = sprites.shipLeftRotL
-        elseif av > 0.5 then player.sprite = sprites.shipLeftRotR
-        else player.sprite = sprites.shipLeft end
-      else
-        if av < -0.5 then player.sprite = sprites.shipFrontRotL
-        elseif av > 0.5 then player.sprite = sprites.shipFrontRotR
-        else player.sprite = sprites.shipFront end
-      end
+    if love.keyboard.isDown('s') and player.body:getX() > 0 then -- and player.body:getX() > 0
+      player.body:applyForce(-x, -y)
     end
 
     if love.keyboard.isDown('d') and player.body:getX() < mapw then -- and player.body:getX() < love.graphics.getWidth()
-      player.body:applyForce(player.thrust*1000, 0)
-      if player.body:getAngle() > 3.93 and player.body:getAngle() < 5.5 then
-        if av < -0.5 then player.sprite = sprites.shipLeftRotL
-        elseif av > 0.5 then player.sprite = sprites.shipLeftRotR
-        else player.sprite = sprites.shipLeft end
-      elseif player.body:getAngle() < 3.93 and player.body:getAngle() > 2.36 then
-        if av < -0.5 then player.sprite = sprites.shipFrontRotL
-        elseif av > 0.5 then player.sprite = sprites.shipFrontRotR
-        else player.sprite = sprites.shipFront end
-      elseif player.body:getAngle() < 2.36 and player.body:getAngle() > 0.79 then
-        if av < -0.5 then player.sprite = sprites.shipRightRotL
-        elseif av > 0.5 then player.sprite = sprites.shipRightRotR
-        else player.sprite = sprites.shipRight end
-      else
-        if av < -0.5 then player.sprite = sprites.shipRearRotL
-        elseif av > 0.5 then player.sprite = sprites.shipRearRotR
-        else player.sprite = sprites.shipRear end
-      end
+      player.body:applyTorque(player.rotSpeed)
     end
-
-    updateTorque()
 
     -- local vx, vy = player.body:getLinearVelocity()
     -- -- vx, vy = clamp(vx, vy, player.maxSpeed)
@@ -155,6 +97,10 @@ function updatePlayer(dt)
     end
   end
 end
+
+-- function drawThrusters()
+
+-- end
 
 function drawPlayer()
   if distanceBetween(player.body:getX(), player.body:getY(), star.body:getX(), star.body:getY()) < star.size then
@@ -221,49 +167,6 @@ function updateBullets(dt)
     b.x = b.x + math.cos(b.direction) * b.speed * dt
     b.y = b.y + math.sin(b.direction) * b.speed * dt
   end
-end
-
-function updateTorque()
-  local twoPi = 2.0 * math.pi -- small optimisation 
-
-  -- returns -1, 1 or 0 depending on whether x>0, x<0 or x=0
-  function sign(x)
-    return x>0 and 1 or x<0 and -1 or 0
-  end
-
-  -- transforms any angle so it is on the 0-2Pi range
-  local _normalizeAngle = function(angle)
-    angle = angle % twoPi
-    return (angle < 0 and (angle + twoPi) or angle)
-  end
-
-  local tx, ty = cam:mousePosition()
-  local x, y = player.body:getPosition()
-  local angle = player.body:getAngle()
-  local maxTorque = player.maxTorque
-  local inertia = player.body:getInertia()
-  local w = player.body:getAngularVelocity()
-
-  local targetAngle = math.atan2(ty-y,tx-x)
-
-  -- distance I have to cover
-  local differenceAngle = _normalizeAngle(targetAngle - angle)
-
-  -- distance it will take me to stop
-  local brakingAngle = _normalizeAngle(sign(w)*2.0*w*w*inertia/maxTorque)
-
-  local torque = maxTorque
-
-  -- two of these 3 conditions must be true
-  local a,b,c = differenceAngle > math.pi, brakingAngle > differenceAngle, w > 0
-  if( (a and b) or (a and c) or (b and c) ) then
-    torque = -torque
-  end
-
-  player.body:applyTorque(torque)
-
-  fltAngle = player.body:getAngle() % (2*math.pi)
-  player.body:setAngle(fltAngle)
 end
 
 function lrScan()
