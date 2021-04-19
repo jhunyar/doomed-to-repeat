@@ -158,18 +158,10 @@ function love.keypressed(key)
     end
   end
 
-  if key == 'w' then
-    player.forces[1] = 1
-  end
-  if key == 'a' then
-    player.forces[2] = 1
-  end
-  if key == 's' then
-    player.forces[3] = 1
-  end
-  if key == 'd' then
-    player.forces[4] = 1
-  end
+  if key == 'w' then player.forces[1] = 1 end
+  if key == 'a' then player.forces[2] = 1 end
+  if key == 's' then player.forces[3] = 1 end
+  if key == 'd' then player.forces[4] = 1 end
 end
 
 function love.keyreleased(key)
@@ -179,18 +171,10 @@ function love.keyreleased(key)
     end
   end
 
-  if key == 'w' then
-    player.forces[1] = 0
-  end
-  if key == 'a' then
-    player.forces[2] = 0
-  end
-  if key == 's' then
-    player.forces[3] = 0
-  end
-  if key == 'd' then
-    player.forces[4] = 0
-  end
+  if key == 'w' then player.forces[1] = 0 end
+  if key == 'a' then player.forces[2] = 0 end
+  if key == 's' then player.forces[3] = 0 end
+  if key == 'd' then player.forces[4] = 0 end
 
   if key == "escape" then
     love.event.quit()

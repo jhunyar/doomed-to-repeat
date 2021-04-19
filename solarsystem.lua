@@ -84,6 +84,7 @@ function updatePlanets(dt)
   for i,o in ipairs(star.orbits) do
     if o.planet then
       -- do this first otherwise the planet has already moved before landing
+      -- TODO should I be doing this all in the player function instead? 
       if player.landed == true and distanceBetween(o.planet.body:getX(), o.planet.body:getY(), player.body:getX(), player.body:getY()) < o.planet.size/2 + 50 then
         player.joint = love.physics.newWeldJoint(
           player.body, o.planet.body,
